@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>英文原书图书馆</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<style>
+:root{
+  --bg:#f5f6f8; --paper:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
+  --accent:#2747b8; --accent-soft:#e6ebfb; --ok:#1f7a4d; --ok-soft:#e3f4ea;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Songti SC","STSong",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding:0 16px}
+.wrap{max-width:860px;margin:0 auto;padding-block:28px 80px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0}
+h1{font-size:clamp(28px,6vw,40px)}
+p{margin:0}
+[hidden]{display:none!important}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lede{color:var(--muted);margin-top:8px}
+.note{font-size:14px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:16px}
+.btn{font:600 15px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:9px 16px;cursor:pointer;min-height:40px}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{font-size:13px;padding:5px 10px;min-height:32px}
+#lock{min-height:80vh;display:flex;align-items:center}
+#lock .panel{width:100%;max-width:440px;margin:0 auto;padding:28px}
+#code{width:100%;font:600 20px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:22px}
+.book{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+a.book:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,30,60,.12)}
+.cover{aspect-ratio:3/4;padding:16px 14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.cover .t{font-family:var(--display);font-size:clamp(17px,4.6vw,23px);line-height:1.15;font-weight:600}
+.cover .a{font-size:12px;letter-spacing:.06em;opacity:.85}
+.cover .rule{width:44px;height:3px;border-radius:2px;background:currentColor;opacity:.7;margin:14px 0}
+.cover .lockico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px;background:rgba(20,24,34,.45)}
+.meta{padding:12px 12px 14px}
+.meta b{font-family:var(--display);font-size:15px;line-height:1.3;display:block}
+.bar{height:6px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tag{display:inline-block;font:600 12px var(--body);border-radius:999px;padding:2px 9px;margin-top:8px}
+.tag.go{background:var(--ok-soft);color:var(--ok)} .tag.new{background:var(--accent-soft);color:var(--accent)} .tag.off{background:var(--line);color:var(--muted)}
+.book.locked{opacity:.75;cursor:default}
+.demo{background:#fff3d6;color:#8a5a00;border-radius:8px;padding:8px 12px;font-size:14px;margin-top:14px}
+@media (prefers-color-scheme: dark){.demo{background:#3a2f12;color:#f3c66b}}
+</style>
+</head>
+<body>
+<div class="wrap" id="lock">
+  <div class="panel">
+    <p class="eyebrow">English Reading Club</p>
+    <h1 style="margin-top:6px">英文原书图书馆</h1>
+    <p class="lede">一起读英文原书 · 朗读 · 生词讲解 · 复习</p>
+    <label for="code" class="note" style="display:block;margin-top:18px">请输入授权码</label>
+    <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="例如 ABCD-1234">
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center"><button class="btn" id="unlock">进入图书馆</button><span class="note" id="msg" role="alert"></span></div>
+  </div>
+</div>
+
+<div class="wrap" id="lib" hidden>
+  <p class="eyebrow">English Reading Club</p>
+  <h1 style="margin-top:6px" id="hello">英文原书图书馆</h1>
+  <p class="lede" id="libLede"></p>
+  <p class="demo" id="demoNote" hidden></p>
+  <div class="grid" id="grid"></div>
+  <div style="margin-top:28px;display:flex;justify-content:flex-end"><button class="btn ghost small" id="logout">退出授权</button></div>
+</div>
+
+<script>
+const BOOKS = [{"id": "my-story-20d", "url": "my-story/", "bg": "#1f3b57", "fg": "#f1dcae", "title": "My Story", "author": "Mohammed bin Rashid Al Maktoum", "total": 20, "perDay": "4 周精读 · 每天 2–3 章精华", "published": 20, "iter": 150000, "keys": [{"s": "DMwgWb8RpKy9n9rrPbtLQg==", "iv": "PMQBi/0naMvURkEd", "k": "rHNs2lfNbQH3ln290kSymH2Z6DTCm05ke6slaUM58VtK5Dv6FMkwaJB22ikkykcVcY5FF/JzkmU="}, {"s": "zvyr088KBXdKqKZ9OtF7pQ==", "iv": "AW3HHSynSXwo3+sJ", "k": "kK2UvIsZl55Bb7NbrfiBpGGNRS6JvMzAcIr/rEEEtRDx7LlLS5NDbbItUnyh0H1j7f1DZvmg6f0="}, {"s": "tNFHZ+7cVRKE60XruEzqww==", "iv": "5y+Z0nFZ9XIJcXc9", "k": "HbdF7a+I2Il1xZG3P0ng7u8P4owTv6orq3C6N8KekQqDxJO9ZJjw0x8fpWfzYUh1/h9Degr9tfE="}, {"s": "WHT/3zRpGwGCkh5D9ZCd1A==", "iv": "Cio2QjXczAVThu9s", "k": "ZgrjfY5QlFo2URgyKaDtZ9tmPmxQHEVVo20N8aGVvU9UI9GCyuygI/4y64/GL+JP8mGi80kxme4="}, {"s": "+tB5hsIrkU3DQ+XOElodXA==", "iv": "WIT2rUhcyeqoXFaP", "k": "X53zKWTBmFk5MImqlNMry+WGflVtx4OqqA2CbbmRbJLjgGAqW+H65rYQ6VbnmK2MPq5qzzsrzWA="}, {"s": "JlvCZL6EMNDe0rQEhy8kPQ==", "iv": "ZLQmvMV9wcYmVaZP", "k": "P373dRnRXWxAJMBxN84hHsqnUHZZZHjcQlit51yuhI7f22N+wayvS7t6vuS+fvoX7J4PVJbvyRk="}, {"s": "pssBp7oY57Wx/iMysS1rSg==", "iv": "GqVKiAau+EV5D9/j", "k": "Ws+laJjAREgDYfSzqNVDQPCLXc664IrhZMoaCQKNMsnUPbFgWK2wzX0On8E+X6QgAJJSueFxhJ0="}, {"s": "Ycejv+aCB5uxE5/FOC7/ng==", "iv": "kcLeVKXux0jkB4Qx", "k": "zvjbkoDcLLAUof5FfRrMS5v34x4mIioV3pfPNKi/CHFJt9hfYi8C5wBZhOhBVricWKFSNSp2hyU="}, {"s": "0pKqbH5S34xLplLwx0wi9w==", "iv": "BeLxgmuUMT56wjo/", "k": "csJX5mgALif/PoxbRawVUSUwROY+Qb/tvfUEeHyA/D78IWEvOVnwILfdVeGL6tR0r1L/riIapEM="}, {"s": "TyYDfNPotz90g0WA3gmalQ==", "iv": "pE0C42o57v5qhWeM", "k": "x82zhslru6paOcHQ0He/9Gk7MLbkdLcwJN9iapB7CTxDDU+RzKf2Jzv11uAI9YZImUCnXOSqtwY="}, {"s": "icdAIv1TM1pkEOiAk8PX+A==", "iv": "/gFQkN0MQlxCYpAk", "k": "cdCTs5FSEqUyBw9WrGhQfnMQaiIsTGJyCJqxoh+pu7nnjkkWLRaL517NTbb0IGmW0B6z0xwcOP4="}, {"s": "iUae7m7SqZWMlXQws24heQ==", "iv": "KjtkNHQxNVlyCWPi", "k": "X3/5hW8UMoYwpDMW2NNdUoyxHtMGXnrr+6tAGhkIw57/p5Q4thTJCKg4PbsWM9Mzp4fOIwaVPTE="}, {"s": "HHMy0MyyrYXhvkjYIl1eRQ==", "iv": "LfnKur2dW89/BVZo", "k": "D8YDyGCWj95ljj4MagEdkiTRTQfYOfC9pSu1QD4erQW7mD6qAPQkfIuJyso6cHyw4QbIBbSgUrw="}, {"s": "346XcrEHNZ/WwGKNq5hdxQ==", "iv": "UseWalLoncV9C2zI", "k": "HE/d9PnHBiBKvjJBKh1Kr6KUvepBmWSGrKxGytMqQrlperkAjiXaYPeOva4q6nhEQXaYhw=="}, {"s": "BxBrYQDbJ+7Rkf0rOoJI0g==", "iv": "w8lhBbE7/qCKirqm", "k": "p0JepWdjuPDQQE988ZFY9vr8A1OCcqFu/aIoa5An5FIo59DkRpkXXpDVy9Q4XccgiIKRDM4C8dw="}, {"s": "39EM0qxLvKywRXj2vuleeA==", "iv": "46otvpXCSZVXGhZh", "k": "XXsdX0ns2jp3zzmsbSut0pXR14fNTQYdJMhrfMtYrHBiVRJwOIakXzKWmypkL50Fn7TkQl/oC9o="}, {"s": "VI8ZoxboQ4JUCEISramilQ==", "iv": "zbny5E/x57XkA6NS", "k": "wfpjdBFTo1O1bs6RKA+gAKL6jh0vGfgFv6bmBvm0sToBMRd66ZUGn02VXbNCI6z3/nvInsZ+CUw="}, {"s": "IveYG8v2O367oTnaSXwwtA==", "iv": "HxXflrnas/8gsxNk", "k": "fph+poGjL0fOaoqNq07gUAwo9PbJ69344rCyUc1C1cvZlXaa0chH4447C8qRTAw6cCLD1TfQZPg="}, {"s": "RQ5ZZhGEDli7wgq2o4HdKA==", "iv": "4UQUrsprDkbPmQR2", "k": "dMR/rGU7UeOUfRTX5y3sEi4dhIXWGJ+03HvQCQjHe6CqjV1eKFz1g/jTIOlAGZ1yroGNWyu1pE4="}, {"s": "iT3j+QKzVbLhbOqd4KtLWg==", "iv": "iuzZOX6Ikt2HrCck", "k": "zlxT90lkFERUjf6D7YgF8Y2z+lKgKBsyD1pgHbQlV65FyW89kGfAZMINcQaWp3Nb8dcgvyq020o="}, {"s": "yk8kDpF3SysZEnA45BMTcA==", "iv": "5J1V4xV2fa7uRWPm", "k": "pCj1p6kM8cTd+vChsVSvSgGEhm4z9UB1MLa0FvGy47uCLUqsIeUDYsctBQfzF15PvuIzpoJ0DY8="}, {"s": "/EkY8cYmQ+lWbWxjAcc9Ag==", "iv": "NitWF82T/ixnaYRx", "k": "MAfbL0m9OKnwh47Nv/7Y8Q4TDSQ//aK/SCgnB2H+jYgjawQWy0Hv57Pz1kuENYhqepa+tQXQOgM="}, {"s": "N9nbiyvtCgaG0YH9aN9dig==", "iv": "b5PK09I/2wcmUFhz", "k": "pPRZYoxbfO8BTfzdQfy+xehbMrg7WiPgGFR9fwPgK8ojDYuQPhtNs+dwj2Yf6VpHZvcVTArUim0="}, {"s": "r/FmEwJ/0Xa8Sz3fh3oCgg==", "iv": "DG6xBzSVOrLoOMde", "k": "nweYj27ip3deA63Z4bAl5xUl7NfRuX8x+qWBpz7ERIE4cp97xYlaCTX3dyfMBWzoo1CkGMLP2Ug="}, {"s": "sNChJooofj0SURGE9Chzdw==", "iv": "BFYawlm81Mz9E422", "k": "VCXXtPVQtGGzY2lgktBcvBTOzkF/qDXJr6jWZ7mmrd+pm1OdkDOdhHWEtkUkTqUCp7z7KAO6fSU="}, {"s": "y6b2IonqrkClwfX0dsFZeg==", "iv": "geSnyvkfIV+kA/IU", "k": "Ol4bhFjlFGO7xglnsgy0zk87EhofLExuUEOz1zhwqg3dD0tHV/2JVsvE85ZVwh08oMHDGADUcX0="}, {"s": "CWo7ZCwqiruGSwVGY0HkOw==", "iv": "3gj99LuL1LByfBmE", "k": "chp/XL97CX/7Ye8fk288hkxnaii+L7GzgNJMQKFAa6yykvEG1mBu8Y844Gdt3eH0v+jVeZFQ91g="}, {"s": "gbasnp/6BOLTx5BMrZDAKA==", "iv": "7oinasU+nhctiBX+", "k": "bB5vkgW1y5t/7Fz6tLTLqQjUCUL94o9YCvXw2lX0oMfBCT5QNOfE7aHiL3GhURBqqselnTUiXto="}, {"s": "ITGadMxBcG8Qt4/GrON7nQ==", "iv": "/ZN7BovxnRuBvY0K", "k": "w8Y059rG1mgsvZ0bxkkBWJNV5w+rnFavjnkHr3tds2a1GpILFuram2I8SwhjNDI3SGbQvkHFNds="}, {"s": "LDlAWJN0s/konhJJlidWAQ==", "iv": "dO0bMB84thOKi6iO", "k": "ndnwpX7yjBK8gN39JGw7DF6guJ+wjaUJa5qiOz1XIRSOvM+e6AC8XQG6HLvLuDPRnBjY31DHTII="}, {"s": "l1DPlS0a19VYkYzN4JZVvw==", "iv": "8dXvFnCsO2jCg4U3", "k": "gej18lJW5pVpYFOzzMak9MJjkC5UdBZpGBzVa95eBMWWTES3iIOro9ncNurdHxIm/6wP1p7aHLI="}]}, {"id": "alice-wonderland", "url": "alice/", "bg": "#e9d9ec", "fg": "#4a2559", "title": "Alice's Adventures in Wonderland", "author": "Lewis Carroll", "total": 38, "perDay": "每章分 3–4 天读", "published": 7, "iter": 150000, "keys": [{"s": "O2ZonzzxGwVPah9WpP8U2Q==", "iv": "5eWB/k9eo2Ns7LSh", "k": "GPTG0gFFRMoXjMeruTRJi15YEMoTx7cObGdbqX2tOLMLbYV6snnZ9KIwD3s0/XPU+YjbDw=="}]}], DEMO = null;
+const $ = id => document.getElementById(id);
+const LKEY = "er:code:library";
+function sget(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function sset(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function sdel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+const b64u8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function opens(book, code){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  for(const k of book.keys){
+    try{
+      const kek = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64u8(k.s), iterations:book.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(k.iv)}, kek, b64u8(k.k));
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
+async function unlock(code, silent){
+  code = (code || "").trim().toUpperCase().replace(/\s+/g, "");
+  if(!code) return;
+  $("msg").textContent = silent ? "" : "正在验证…"; $("unlock").disabled = true;
+  try{
+    const ok = [];
+    for(const b of BOOKS) if(await opens(b, code)) ok.push(b.id);
+    if(!ok.length){ $("msg").textContent = silent ? "" : "授权码不对，请检查后再试。"; return; }
+    sset(LKEY, code);
+    ok.forEach(id => sset("er:code:" + id, code));     // the book's own shelf then opens without asking again
+    show(ok);
+  }finally{ $("unlock").disabled = false; }
+}
+function prog(id){ try{ return JSON.parse(sget("er:" + id) || "{}") || {}; }catch(e){ return {}; } }
+function show(ok){
+  $("lock").hidden = true; $("lib").hidden = false;
+  const name = BOOKS.map(b => prog(b.id).name).find(Boolean);
+  $("hello").textContent = name ? name + "，欢迎回来 👋" : "欢迎来到图书馆 👋";
+  $("libLede").textContent = "你可以读 " + ok.length + " 本书。点开一本，继续今天的阅读。";
+  if(DEMO){ $("demoNote").hidden = false; $("demoNote").textContent = DEMO; }
+  const g = $("grid"); g.innerHTML = "";
+  BOOKS.forEach(b => {
+    const can = ok.includes(b.id), p = prog(b.id), days = p.days || {};
+    const done = Object.values(days).filter(d => d && d.done).length;
+    const el = document.createElement(can ? "a" : "div");
+    el.className = "book" + (can ? "" : " locked");
+    if(can) el.href = b.url;
+    const tag = !can ? '<span class="tag off">未开通</span>' : done ? '<span class="tag go">继续阅读 →</span>' : '<span class="tag new">开始阅读 →</span>';
+    el.innerHTML = `
+      <div class="cover" style="background:${b.bg};color:${b.fg}">
+        <div><div class="t">${b.title}</div><div class="rule"></div><div class="a">${b.author}</div></div>
+        <div class="a">${b.total} 天 · ${b.perDay || "每天一章"}</div>
+        ${can ? "" : '<div class="lockico">🔒</div>'}
+      </div>
+      <div class="meta">
+        <b>${b.title}</b>
+        <p class="note">${can ? "已完成 " + done + " / " + b.total + " 天 · 已更新到 Day " + b.published : "需要授权码才能打开，请联系发书人"}</p>
+        ${can ? `<div class="bar"><i style="width:${100 * done / b.total}%"></i></div>` : ""}
+        ${tag}
+      </div>`;
+    g.appendChild(el);
+  });
+}
+$("unlock").onclick = () => unlock($("code").value);
+$("code").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("code").value); });
+$("logout").onclick = () => { sdel(LKEY); BOOKS.forEach(b => sdel("er:code:" + b.id)); location.reload(); };
+const saved = sget(LKEY) || BOOKS.map(b => sget("er:code:" + b.id)).find(Boolean) || sget("er:code:my-story-mbr"); if(saved){ $("code").value = saved; unlock(saved, true); }
+</script>
+</body>
+</html>

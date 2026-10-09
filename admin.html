@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>My Story · 管理</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<style>
+:root{
+  --bg:#f5f6f8; --paper:#fff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
+  --accent:#2747b8; --accent-soft:#e6ebfb; --ok:#1f7a4d; --ok-soft:#e3f4ea; --bad:#b3261e; --bad-soft:#fbe7e5; --warn:#8a5a00; --warn-soft:#fff3d6;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Georgia,"Songti SC",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; --bad:#ff8a80; --bad-soft:#3a1c1b; --warn:#f3c66b; --warn-soft:#3a2f12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; --bad:#ff8a80; --bad-soft:#3a1c1b; --warn:#f3c66b; --warn-soft:#3a2f12; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding:0 16px}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 0 80px}
+[hidden]{display:none!important}
+h1{font-family:var(--display);font-size:clamp(28px,5vw,38px);margin:0}
+h2{font-size:17px;margin:0}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.note{color:var(--muted);font-size:13px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px}
+.btn{font:600 14px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{padding:5px 10px;font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* lock */
+#lock{min-height:80vh;display:flex;align-items:center}
+#lock .panel{width:100%;max-width:420px;margin:0 auto;padding:28px}
+#lock input{width:100%;font:600 20px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:14px}
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:20px}
+.tile{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tile b{display:block;font:700 30px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.tile span{color:var(--muted);font-size:13px}
+.tile.warn b{color:var(--warn)}
+/* toolbar */
+.bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:600 13px var(--body);border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chips button.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.chips button i{font-style:normal;opacity:.7;margin-left:4px}
+input.search{font:14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:180px}
+/* list */
+.list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:minmax(150px,1.2fr) minmax(180px,1.6fr) minmax(110px,.9fr) minmax(150px,1.3fr) auto;gap:14px;align-items:center}
+.card.none{opacity:.62}
+.who b{display:block;font-size:16px}
+.who small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.who input{display:block;font:600 15px var(--body);width:100%;max-width:170px;padding:4px 8px;border:1px dashed var(--line);border-radius:6px;background:transparent;color:var(--ink)}
+.who input:focus{border-style:solid;border-color:var(--accent);outline:none}
+.prog .t{font-size:14px;font-variant-numeric:tabular-nums}
+.prog .t b{font-size:16px}
+.track{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
+.track i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.tag{display:inline-block;font:600 12px var(--body);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.tag.ok{background:var(--ok-soft);color:var(--ok)} .tag.warn{background:var(--warn-soft);color:var(--warn)} .tag.bad{background:var(--bad-soft);color:var(--bad)} .tag.none{background:var(--line);color:var(--muted)} .tag.new{background:#e6ebfb;color:#2b4bb3}
+.words{font-size:13px;color:var(--muted)}
+.words b{color:var(--ink);font-variant-numeric:tabular-nums}
+.more{font:600 12px var(--body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.detail{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;font-size:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.detail h4{margin:0 0 6px;font-size:12px;color:var(--muted);letter-spacing:.06em}
+.dots{display:flex;flex-wrap:wrap;gap:4px}
+.dots span{width:22px;height:22px;border-radius:5px;background:var(--line);font:600 10px/22px var(--body);text-align:center;color:var(--muted)}
+.dots span.d{background:var(--accent);color:var(--paper)}
+@media (max-width:760px){
+  .card{grid-template-columns:1fr auto;gap:10px}
+  .card .who{grid-column:1;grid-row:1}
+  .card .when{grid-column:2;grid-row:1;justify-self:end}
+  .card .prog{grid-column:1/-1;grid-row:2}
+  .card .words{grid-column:1;grid-row:3}
+  .card .act{grid-column:2;grid-row:3;justify-self:end}
+}
+#msg{font-size:13px}
+.del{font:600 13px var(--body);background:none;border:1px solid var(--bad);color:var(--bad);border-radius:8px;padding:6px 12px;cursor:pointer}
+.books{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.books button{font:600 15px var(--body);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px 16px;cursor:pointer;text-align:left}
+.books button small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.books button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap" id="lock">
+  <div class="panel">
+    <p class="eyebrow">英文原书图书馆 · 管理</p>
+    <h1 style="margin-top:6px">管理员登录</h1>
+    <label class="note" for="key" style="display:block;margin-top:16px">管理密码</label>
+    <input id="key" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX">
+    <div class="row" style="margin-top:14px"><button class="btn" id="go">进入</button><span class="note" id="lkMsg"></span></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <div class="bar">
+    <div><p class="eyebrow">英文原书图书馆 · 管理</p><h1>大家的学习情况</h1></div>
+    <div class="row"><span class="note" id="upd"></span><button class="btn ghost small" id="refresh">刷新</button></div>
+  </div>
+  <div class="books" id="books" role="tablist" aria-label="选择书"></div>
+  <div class="tiles" id="tiles"></div>
+  <div class="panel">
+    <div class="bar">
+      <div class="chips" id="chips"></div>
+      <input class="search" id="q" placeholder="搜名字" aria-label="搜索">
+    </div>
+    <p class="note" style="margin-top:10px">点名字可以直接改，改完自动保存。超过 3 天没学显示黄色，超过 7 天显示红色。</p>
+    <div class="list" id="list"></div>
+    <p id="msg" class="note"></p>
+  </div>
+</div>
+
+<script>
+"use strict";
+const SYNC = "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec", BOOKS = [{"id": "my-story-20d", "title": "My Story", "total": 20, "published": 20}, {"id": "alice-wonderland", "title": "Alice's Adventures in Wonderland", "total": 38, "published": 7}];
+let BOOK = BOOKS[0].id, TOTAL = BOOKS[0].total, PUBLISHED = BOOKS[0].published, ALL = {};
+function pickBook(id){ const b = BOOKS.find(x => x.id === id) || BOOKS[0]; BOOK = b.id; TOTAL = b.total; PUBLISHED = b.published; open = {}; useRows(); }
+function renderBooks(){
+  $("books").innerHTML = BOOKS.map(b => `<button type="button" role="tab" data-b="${b.id}" class="${b.id === BOOK ? "on" : ""}" aria-selected="${b.id === BOOK}">${esc(b.title)}<small>${(ALL[b.id] || []).filter(x => x.label && x.synced).length} 人在读 · 已更新到 Day ${b.published}</small></button>`).join("");
+}
+const KKEY = "er:adminkey";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let KEY = "", ROWS = [], filter = "all", open = {};
+const today = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const ago = iso => { if(!iso) return null; const m = String(iso).match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return null; return Math.round((today() - new Date(+m[1], m[2]-1, +m[3])) / 864e5); };
+function sget(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function sset(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+
+async function load(){
+  $("upd").textContent = "正在读取…";
+  const r = await fetch(SYNC + "?admin=" + encodeURIComponent(KEY) + "&_=" + Date.now());
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.err === "key" ? "key" : "load");
+  ALL = j.books || {"my-story-mbr": j.rows};
+  $("upd").textContent = "更新于 " + new Date().toTimeString().slice(0, 5);
+  useRows();
+}
+function useRows(){
+  ROWS = (ALL[BOOK] || []).filter(x => x.label && x.synced);   // only codes that have actually been used
+  ROWS.forEach(x => { x.started = !x.none && (x.done > 0 || x.words > 0 || !!x.synced); x.ago = ago(x.last || x.synced); });
+  renderBooks(); render();
+}
+function status(x){
+  if(!x.started) return ["none", "还没开始"];
+  if(!(+x.done) && !(+x.words)) return ["new", x.ago === 0 ? "今天刚登录" : "已登录，还没学"];
+  if(x.ago === null) return ["none", "—"];
+  if(x.ago >= 7) return ["bad", x.ago + " 天没学"];
+  if(x.ago >= 3) return ["warn", x.ago + " 天没学"];
+  return ["ok", x.ago === 0 ? "今天学过" : x.ago + " 天前"];
+}
+function render(){
+  const started = ROWS.filter(x => x.started), idle = started.filter(x => x.ago !== null && x.ago >= 3);
+  const avg = started.length ? started.reduce((a, x) => a + (+x.done || 0), 0) / started.length : 0;
+  const todayN = started.filter(x => x.ago === 0).length;
+  $("tiles").innerHTML = `
+    <div class="tile"><b>${ROWS.length}</b><span>正在使用的人</span></div>
+    <div class="tile"><b>${todayN}</b><span>今天学过</span></div>
+    <div class="tile"><b>${avg.toFixed(1)}</b><span>平均完成天数（已更新到 Day ${PUBLISHED}）</span></div>
+    <div class="tile ${idle.length ? "warn" : ""}"><b>${idle.length}</b><span>超过 3 天没学</span></div>`;
+  const counts = {all: ROWS.length, active: started.filter(x => x.ago !== null && x.ago < 3).length, idle: idle.length};
+  const names = {all: "全部", active: "在学", idle: "3 天没学"};
+  $("chips").innerHTML = Object.keys(names).map(k => `<button data-f="${k}" class="${filter === k ? "on" : ""}">${names[k]}<i>${counts[k]}</i></button>`).join("");
+  const q = $("q").value.trim().toLowerCase();
+  let list = ROWS.filter(x => filter === "all" || (filter === "active" && x.started && x.ago < 3) || (filter === "idle" && idle.includes(x)) || (filter === "none" && !x.started));
+  if(q) list = list.filter(x => (x.label + " " + (x.name || "")).toLowerCase().includes(q));
+  list.sort((a, b) => (b.started - a.started) || String(b.synced || "").localeCompare(String(a.synced || "")) || String(a.label).localeCompare(String(b.label), "zh"));
+  const box = $("list"); box.innerHTML = "";
+  if(!list.length) box.innerHTML = ROWS.length ? '<p class="note">没有符合条件的人。</p>' : '<p class="note">还没有人登录。朋友输入授权码并填好名字后，会自动出现在这里。</p>';
+  list.forEach(x => {
+    const [cls, txt] = status(x), done = +x.done || 0;
+    const c = document.createElement("div"); c.className = "card" + (x.started ? "" : " none");
+    c.innerHTML = `
+      <div class="who"><input value="${esc(x.name)}" placeholder="填名字" aria-label="${esc(x.label)} 的名字"></div>
+      <div class="prog"><div class="t"><b>${done}</b> / ${TOTAL} 天${x.lastDay ? " · 最近完成 " + esc(x.lastDay) : ""}</div><div class="track"><i style="width:${100 * done / TOTAL}%"></i></div></div>
+      <div class="when"><span class="tag ${cls}">${txt}</span></div>
+      <div class="words">${x.started ? `生词 <b>${x.words || 0}</b> · 掌握 <b>${x.mastered || 0}</b> · 到期 <b>${x.due || 0}</b>` : "—"}</div>
+      <div class="act">${x.started ? '<button class="more" type="button">详情</button>' : ""}</div>`;
+    const inp = c.querySelector("input");
+    inp.addEventListener("change", () => saveName(x, inp.value.trim()));
+    inp.addEventListener("keydown", e => { if(e.key === "Enter") inp.blur(); });
+    const mb = c.querySelector(".more");
+    if(mb) mb.onclick = () => { open[x.label] = !open[x.label]; render(); };
+    if(open[x.label] && x.started){
+      const doneSet = new Set((x.days || []).map(d => d[0]));
+      const d = document.createElement("div"); d.className = "detail";
+      d.innerHTML = `<div><h4>完成的天数</h4><div class="dots">${Array.from({length: PUBLISHED}, (_, i) => `<span class="${doneSet.has(i + 1) ? "d" : ""}" title="Day ${i + 1}">${i + 1}</span>`).join("")}</div></div>
+        <div><h4>常错的词</h4>${x.weak ? esc(x.weak) : "没有"}</div>
+        <div><h4>最近学习 / 最后同步</h4>${esc(x.last || "—")} · ${x.synced ? new Date(x.synced).toLocaleString("zh-CN", {month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"}) : "—"}</div>
+        <div><h4>管理</h4>${x.row ? '<button type="button" class="del">🗑 删除这条记录</button>' : '<span class="note">（需要部署新版同步代码才能删除）</span>'}</div>`;
+      const db = d.querySelector(".del"); if(db) db.onclick = () => delRow(x);
+      c.appendChild(d);
+    }
+    box.appendChild(c);
+  });
+}
+async function delRow(x){
+  const who = (x.name || x.label) + "（最后同步 " + (x.synced ? new Date(x.synced).toLocaleString("zh-CN") : "—") + "）";
+  if(!confirm("确定删除 " + who + " 的这条学习记录吗？\n删除后管理页不再显示；如果这个人再登录，会重新生成一条新记录。")) return;
+  $("msg").textContent = "正在删除…";
+  try{
+    const r = await fetch(SYNC, {method: "POST", body: JSON.stringify({admin: KEY, book: BOOK, del: 1, row: x.row, label: x.label, synced: x.synced})});
+    const j = await r.json();
+    $("msg").textContent = j.ok ? "✓ 已删除 " + who : (j.err === "changed" ? "这条记录刚刚有更新，请刷新后再删。" : "删除失败，请再试一次。");
+    await load();
+  }catch(e){ $("msg").textContent = "删除失败，请检查网络后再试。"; }
+}
+async function saveName(x, name){
+  x.name = name; $("msg").textContent = "正在保存…";
+  try{
+    const r = await fetch(SYNC, {method: "POST", body: JSON.stringify({admin: KEY, book: BOOK, label: x.label, name})});
+    const j = await r.json(); $("msg").textContent = j.ok ? "✓ 已保存 " + x.label + " = " + (name || "（空）") : "保存失败，请再试一次。";
+  }catch(e){ $("msg").textContent = "保存失败，请检查网络后再试。"; }
+}
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; filter = b.dataset.f; render(); });
+$("q").addEventListener("input", render);
+$("books").addEventListener("click", e => { const b = e.target.closest("button"); if(b) pickBook(b.dataset.b); });
+$("refresh").onclick = () => load().catch(() => $("upd").textContent = "读取失败");
+async function enter(k, silent){
+  KEY = k.trim().toUpperCase(); if(!KEY) return;
+  $("lkMsg").textContent = silent ? "" : "正在读取…";
+  try{
+    await load(); sset(KKEY, KEY);
+    $("lock").hidden = true; $("app").hidden = false;
+    setInterval(() => { if(document.visibilityState === "visible") load().catch(() => {}); }, 60000);
+  }catch(e){ $("lkMsg").textContent = e.message === "key" ? "密码不对。" : "读取失败，请检查网络。"; }
+}
+$("go").onclick = () => enter($("key").value);
+$("key").addEventListener("keydown", e => { if(e.key === "Enter") enter($("key").value); });
+const saved = sget(KKEY); if(saved){ $("key").value = saved; enter(saved, true); }
+</script>
+</body>
+</html>

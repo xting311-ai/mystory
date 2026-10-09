@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Story</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<style>
+:root{
+  --bg:#f5f6f8; --paper:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
+  --accent:#2747b8; --accent-soft:#e6ebfb; --mark:#ffe680; --cur:#fff4c2;
+  --ok:#1f7a4d; --ok-soft:#e3f4ea; --bad:#b3261e; --bad-soft:#fbe7e5; --warn:#8a5a00; --warn-soft:#fff3d6;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Songti SC","STSong",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --read:Georgia,"Times New Roman","Songti SC",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --mark:#6b5a12; --cur:#3a3416;
+  --ok:#6fd39f; --ok-soft:#173326; --bad:#ff8a80; --bad-soft:#3a1c1b; --warn:#f3c66b; --warn-soft:#3a2f12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --mark:#6b5a12; --cur:#3a3416;
+  --ok:#6fd39f; --ok-soft:#173326; --bad:#ff8a80; --bad-soft:#3a1c1b; --warn:#f3c66b; --warn-soft:#3a2f12; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding:0 16px env(safe-area-inset-bottom,0px)}
+.wrap{max-width:780px;margin:0 auto;padding-block:24px 96px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,6vw,40px)} h2{font-size:24px} h3{font-size:18px}
+p{margin:0}
+[hidden]{display:none!important}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lede{color:var(--muted);margin-top:8px;max-width:62ch}
+.note{font-size:14px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack{display:flex;flex-direction:column;gap:12px}
+button,select,input,textarea{font-family:var(--body)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font:600 15px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:9px 16px;cursor:pointer;min-height:40px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{font-size:13px;padding:5px 10px;min-height:32px}
+.say{font:600 13px var(--body);background:var(--accent-soft);color:var(--accent);border:0;border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.sel{font:15px var(--body);padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);max-width:100%}
+/* lock screen */
+#lock{min-height:80vh;display:flex;align-items:center}
+#lock .panel{width:100%;max-width:440px;margin:0 auto;padding:28px}
+#lock input{width:100%;font:600 20px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:14px}
+.howto{margin-top:18px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.howto li{margin-top:4px}
+/* header */
+.week{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.week span{font:600 12px var(--body);border:1px solid var(--line);border-radius:6px;padding:4px 9px;color:var(--muted);background:var(--paper)}
+.week span.cur{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.week span.done{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.steps{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin-top:16px;border-bottom:1px solid var(--line)}
+.steps a{flex:0 0 auto;font-size:13px;font-weight:600;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--paper)}
+.steps a.done{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.steps a.done::before{content:"✓ "}
+section.step{margin-top:40px;scroll-margin-top:64px}
+.step-head{display:flex;gap:12px;align-items:baseline}
+.step-head .n{font-family:var(--display);font-weight:700;font-size:26px;color:var(--accent)}
+/* shelf */
+.wk{margin-top:26px}
+.wk h3{font-size:15px;font-family:var(--body);color:var(--muted);letter-spacing:.04em}
+.wkhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wkhead .fold{font:600 13px var(--body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap}
+.wkhead .fold:hover{border-color:var(--accent);color:var(--accent)}
+.wk.closed .day{display:none}
+.day{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:8px;cursor:pointer;color:var(--ink);font:inherit}
+.day:disabled{cursor:default;opacity:.6}
+.day .dn{font-family:var(--display);font-weight:700;font-size:20px;color:var(--accent);min-width:58px}
+.day .dt{flex:1;min-width:0}
+.day .dt b{display:block;font-weight:600;font-family:var(--read)}
+.day .dt small{color:var(--muted);font-size:13px}
+.pill{font:600 12px var(--body);border-radius:999px;padding:3px 10px;white-space:nowrap;background:var(--accent-soft);color:var(--accent)}
+.pill.done{background:var(--ok-soft);color:var(--ok)}
+.pill.lock{background:var(--line);color:var(--muted)}
+.soon{margin-top:14px;padding:14px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:14px;text-align:center}
+/* player */
+.player{position:sticky;top:52px;z-index:4}
+.bar{position:relative;height:8px;background:var(--line);border-radius:4px;margin-top:12px;cursor:pointer;touch-action:none}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:4px;width:0}
+.time{font-variant-numeric:tabular-nums}
+.segs{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.segs button{font:600 13px var(--body);border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:8px;padding:6px 10px;cursor:pointer;text-align:left}
+.segs button small{display:block;font-weight:400;font-size:11px}
+.segs button.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.segs button.heard::after{content:" ✓";color:var(--ok)}
+#text p.segstart{border-top:1px dashed var(--line);padding-top:12px}
+.seglabel{display:block;font:600 11px var(--body);letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+/* reading text */
+#text{margin-top:16px;font-family:var(--read);font-size:19px;line-height:1.75}
+#text h3{font-family:var(--display);margin:28px 0 10px;font-size:22px}
+#text h3 small{display:block;font:600 12px var(--body);letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+#text p{margin:0 0 14px}
+#text p.poem{padding-left:18px;border-left:3px solid var(--line);font-style:italic}
+#text p.poem .s{display:block}
+.s{border-radius:3px;cursor:pointer;transition:background .15s}
+.s.cur{background:var(--cur);box-shadow:0 0 0 2px var(--cur)}
+.s:hover{background:var(--accent-soft)}
+.off #text{display:none}
+#textOff{display:none;margin-top:14px;padding:22px;border:1px dashed var(--line);border-radius:10px;text-align:center;color:var(--muted);font-size:15px}
+.off #textOff{display:block}
+.segtext h4{font:600 12px var(--body);letter-spacing:.08em;color:var(--accent);margin:0 0 10px;text-transform:uppercase}
+.pop{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;max-width:640px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,.2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:15px var(--read);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+/* words */
+textarea{width:100%;min-height:90px;font:16px/1.6 var(--body);padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);resize:vertical}
+.res{font-size:14px;margin-top:10px}
+.res .bad{color:var(--bad)} .res .ok{color:var(--ok)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:14px}
+.card .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.card .w{font-family:var(--display);font-size:28px;font-weight:700}
+.ipa{color:var(--muted);font-size:16px;margin-left:8px}
+.pos{font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 7px;margin-right:6px}
+.cn{font-size:17px;font-weight:500;margin-top:6px}
+.dl{display:grid;grid-template-columns:84px 1fr;gap:8px 12px;margin-top:12px;font-size:15px}
+.dl dt{color:var(--muted);font-size:13px;padding-top:2px}
+.dl dd{margin:0;min-width:0}
+.ex{display:flex;gap:8px;align-items:flex-start}
+.ex span{flex:1;min-width:0}
+.ex i{color:var(--muted);font-style:normal;font-size:13px;display:block}
+.book{font-family:var(--read)}
+.book b{background:linear-gradient(transparent 55%,var(--mark) 55%);font-weight:700}
+.tip{background:var(--warn-soft);border-radius:6px;padding:8px 12px;font-size:14px;margin-top:12px}
+.rm{font:600 12px var(--body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:3px 10px;cursor:pointer}
+/* drills */
+.drill{padding:12px 0;border-top:1px solid var(--line)}
+.drill:first-child{border-top:0;padding-top:0}
+.drill .q{font-weight:500}
+.drill .q small{color:var(--muted);font-weight:400;margin-left:6px}
+.drill .line{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.drill input{flex:1 1 200px;min-width:0;font:16px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.drill.ok input{border-color:var(--ok);background:var(--ok-soft)}
+.drill.bad input{border-color:var(--bad)}
+.fb{font-size:14px;margin-top:6px}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.tag{font:600 11px var(--body);border-radius:4px;padding:1px 6px;margin-left:6px;background:var(--warn-soft);color:var(--warn)}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+pre.out{white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12px;max-height:140px;overflow:auto}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--ink);color:var(--bg);font-size:14px;padding:8px 14px;border-radius:999px;max-width:calc(100% - 32px)}
+@media (max-width:520px){.dl{grid-template-columns:1fr}.dl dt{padding-top:6px}#text{font-size:18px}.player{top:50px}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+.intro{font-size:14px;line-height:1.7;color:var(--muted);background:var(--accent-soft);border-radius:8px;padding:8px 12px;margin:6px 0 12px}
+.intro b{color:var(--accent)}
+#app.noaudio #play,#app.noaudio #stop,#app.noaudio #tm,#app.noaudio #bar,#app.noaudio #speedRow,#app.noaudio #showTxt,#app.noaudio #textOff{display:none!important}
+#app.noaudio #textWrap.off #text{display:block!important;filter:none!important;visibility:visible!important}
+.soon{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:14px;margin-top:12px}
+</style>
+</head>
+<body>
+<div id="toast" role="status" hidden></div>
+
+<!-- ============ LOCK ============ -->
+<div class="wrap" id="lock">
+  <div class="panel">
+    <p class="eyebrow" id="lkEyebrow"></p>
+    <h1 style="margin-top:6px" id="lkTitle"></h1>
+    <p class="lede" id="lkSub"></p>
+    <label for="code" class="note" style="display:block;margin-top:18px">请输入授权码</label>
+    <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="例如 ABCD-1234">
+    <label class="note row" style="margin-top:10px;gap:6px"><input type="checkbox" id="remember" checked style="width:auto;margin:0"> 在这台设备上记住授权码</label>
+    <div class="row" style="margin-top:14px"><button class="btn" id="unlock">解锁</button><span class="note" id="lkMsg" role="alert"></span></div>
+    <ul class="howto" style="padding-left:18px">
+      <li>授权码由发书的人提供，每人一个。</li>
+      <li>手机和电脑都可以用，建议用 Safari 或 Chrome。在微信里打开也可以。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ SHELF ============ -->
+<div class="wrap" id="shelf" hidden>
+  <a id="toLib" class="btn ghost small" hidden href="#" style="display:inline-flex;align-items:center;text-decoration:none;margin-bottom:14px">← 回到图书馆</a>
+  <p class="eyebrow" id="shEyebrow"></p>
+  <h1 id="shTitle"></h1>
+  <p class="lede" id="shLede"></p>
+  <div class="panel" id="shDue" hidden>
+    <h3>今天到期的复习 <span class="note" id="shDueCount"></span></h3>
+    <p class="note" style="margin-top:4px">按艾宾浩斯间隔安排的旧词。也可以在当天课程的第 4 步里复习。</p>
+    <div class="stack" id="shDueList" style="margin-top:10px"></div>
+  </div>
+  <div id="days"></div>
+  <!-- PROGRESS -->
+  <section id="s5" style="margin-top:14px">
+    <div class="panel">
+      <h3>我的进度</h3>
+      <p class="note" id="prog" style="margin-top:6px"></p>
+      <p class="note" id="syncState" style="margin-top:4px"></p>
+      <p class="note" style="margin-top:8px">进度会自动同步。换手机、换电脑或清除浏览器数据后，输入同一个授权码，进度会自动恢复。</p>
+      <div class="row" style="margin-top:10px;justify-content:flex-end"><button class="btn ghost small" id="logout">退出授权</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ NAME (first login) ============ -->
+<div id="nameAsk" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50">
+  <div class="panel" style="width:100%;max-width:400px;margin:0">
+    <div style="font-size:40px;line-height:1">🎉</div>
+    <h3 style="margin-top:8px">欢迎加入 My Story 共读！</h3>
+    <p style="margin-top:8px;line-height:1.7">太开心你来了！接下来我们每天读一点，<b>听原声、学生词、一起复习</b>，一点点把整本英文原书读完 📖✨</p>
+    <p class="note" style="margin-top:6px">先告诉我们怎么称呼你吧～（只有发书的人能看到）</p>
+    <input id="nameIn" maxlength="30" autocomplete="name" placeholder="你的名字或昵称" style="width:100%;font:600 18px var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:12px">
+    <div class="row" style="margin-top:12px"><button class="btn" id="nameOk" disabled>开始我的阅读之旅 →</button><span class="note" id="nameMsg"></span></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="wrap" id="app" hidden>
+  <button class="btn ghost small" id="toShelf">← 返回书架</button>
+  <p class="eyebrow" id="hdEyebrow" style="margin-top:16px"></p>
+  <h1 id="hdTitle"></h1>
+  <p class="lede" id="hdLede"></p>
+
+  <p class="soon" id="soonNote" hidden>🎧 这一天的录音和生词讲解还在制作中，现在可以先读原文。</p>
+  <nav class="steps" id="steps">
+    <a href="#s1" data-s="1">1 阅读</a>
+    <a href="#s2" data-s="2">2 生词输入</a>
+    <a href="#s3" data-s="3">3 生词讲解</a>
+    <a href="#s4" data-s="4">4 生词复习</a>
+  </nav>
+
+  <!-- 1 READ -->
+  <section class="step" id="s1">
+    <div class="step-head"><span class="n">1</span><h2>阅读</h2></div>
+    <p class="note" style="margin-top:6px" id="readHint">朗读按段播放，每段约 250–300 词。建议每段先只听一遍，再点“显示英文”边听边看。点任意一句：可以从这句开始播放，也可以把这句里不会的词加到生词。</p>
+    <div class="panel player">
+      <div class="row">
+        <button class="btn" id="play">▶ 播放</button>
+        <button class="btn ghost small" id="stop">■ 停止</button>
+        <span class="note time" id="tm">0:00 / 0:00</span>
+        <button class="btn ghost small" id="showTxt" style="margin-left:auto">显示英文</button>
+      </div>
+      <div class="bar" id="bar" role="slider" aria-label="播放进度" tabindex="0"><i id="barFill"></i></div>
+      <div class="segs" id="segs"></div>
+      <div class="row" style="margin-top:12px" id="speedRow">
+        <label class="note" for="speed">语速</label>
+        <select class="sel" id="speed"><option value="1">正常 1.0</option><option value="0.9">0.9</option><option value="0.8">慢 0.8</option></select>
+        <label class="note row" style="gap:4px"><input type="checkbox" id="follow" checked> 自动跟随</label>
+        <label class="note row" style="gap:4px"><input type="checkbox" id="autoNext"> 播完自动下一段</label>
+      </div>
+    </div>
+    <div class="off" id="textWrap"><div id="textOff">英文已隐藏，先用耳朵听。听完点“显示英文”对照。</div><div id="text"></div></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="readDone">读完了，去输入生词</button></div>
+  </section>
+
+  <!-- 2 INPUT -->
+  <section class="step" id="s2">
+    <div class="step-head"><span class="n">2</span><h2>生词输入</h2></div>
+    <div class="panel">
+      <p class="note">输入今天读到的、你不会的词。可以一次输入多个，用逗号或换行分开。写书里的形式也可以（比如 <i>devoted</i>、<i>fled</i>），会自动找到原形。</p>
+      <textarea id="wIn" style="margin-top:10px" placeholder="例如：culmination, upsurge, fled"></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn" id="wBtn">查讲解，加入我的生词</button><span class="note" id="wCount"></span></div>
+      <div class="res" id="wRes"></div>
+    </div>
+  </section>
+
+  <!-- 3 EXPLAIN -->
+  <section class="step" id="s3">
+    <div class="step-head"><span class="n">3</span><h2>生词讲解</h2></div>
+    <p class="note" style="margin-top:6px">每个词先点 🔊 听两遍、跟读，再看书里的原句和例句。已经会的可以点“移出”。</p>
+    <div id="cards"><div class="panel note" id="cardsEmpty">还没有生词。先在第 2 步输入。</div></div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="cardsDone">学完了，去复习</button></div>
+  </section>
+
+  <!-- 4 REVIEW -->
+  <section class="step" id="s4">
+    <div class="step-head"><span class="n">4</span><h2>生词复习</h2></div>
+    <p class="note" style="margin-top:6px">看中文和词性写出英文。写错不能提交：第 1 次出现发音按钮，第 2 次提示首字母和字母数，第 3 次显示答案，照着写一遍。复习时间按艾宾浩斯间隔（1、3、7、14、30 天）自动安排。</p>
+    <div class="panel"><h3>以前的生词 · 今天到期 <span class="note" id="dueCount"></span></h3><div class="stack" id="due" style="margin-top:10px"></div></div>
+    <div class="panel"><h3>今天的生词 · 拼写测试 <span class="note" id="newCount"></span></h3><div class="stack" id="newDrill" style="margin-top:10px"></div></div>
+    <div class="panel">
+      <h3>完成今天</h3>
+      <p class="note" id="finInfo" style="margin-top:6px"></p>
+      <div class="row" style="margin-top:12px"><button class="btn" id="finish">完成今天</button></div>
+      <p id="finMsg" style="margin-top:10px" hidden></p>
+    </div>
+  </section>
+
+</div>
+
+<div class="pop" id="pop" hidden role="dialog" aria-label="这一句">
+  <div class="row"><button class="btn small" id="popPlay">▶ 从这句播放</button><button class="say" id="popSay">🔊 只听这句</button><button class="rm" id="popClose" style="margin-left:auto">关闭</button></div>
+  <p class="note" style="margin-top:10px">点不会的词，加入生词框：</p>
+  <div class="chips" id="popChips"></div>
+</div>
+
+<script id="meta" type="application/json">{"bookId": "my-story-20d", "book": "My Story", "author": "Mohammed bin Rashid Al Maktoum", "total": 20, "weekDays": 5, "perDay": "4 周精读 · 每天 2–3 章精华", "libraryUrl": "../", "syncUrl": "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec", "iter": 150000, "keys": [{"s": "DMwgWb8RpKy9n9rrPbtLQg==", "iv": "PMQBi/0naMvURkEd", "k": "rHNs2lfNbQH3ln290kSymH2Z6DTCm05ke6slaUM58VtK5Dv6FMkwaJB22ikkykcVcY5FF/JzkmU="}, {"s": "zvyr088KBXdKqKZ9OtF7pQ==", "iv": "AW3HHSynSXwo3+sJ", "k": "kK2UvIsZl55Bb7NbrfiBpGGNRS6JvMzAcIr/rEEEtRDx7LlLS5NDbbItUnyh0H1j7f1DZvmg6f0="}, {"s": "tNFHZ+7cVRKE60XruEzqww==", "iv": "5y+Z0nFZ9XIJcXc9", "k": "HbdF7a+I2Il1xZG3P0ng7u8P4owTv6orq3C6N8KekQqDxJO9ZJjw0x8fpWfzYUh1/h9Degr9tfE="}, {"s": "WHT/3zRpGwGCkh5D9ZCd1A==", "iv": "Cio2QjXczAVThu9s", "k": "ZgrjfY5QlFo2URgyKaDtZ9tmPmxQHEVVo20N8aGVvU9UI9GCyuygI/4y64/GL+JP8mGi80kxme4="}, {"s": "+tB5hsIrkU3DQ+XOElodXA==", "iv": "WIT2rUhcyeqoXFaP", "k": "X53zKWTBmFk5MImqlNMry+WGflVtx4OqqA2CbbmRbJLjgGAqW+H65rYQ6VbnmK2MPq5qzzsrzWA="}, {"s": "JlvCZL6EMNDe0rQEhy8kPQ==", "iv": "ZLQmvMV9wcYmVaZP", "k": "P373dRnRXWxAJMBxN84hHsqnUHZZZHjcQlit51yuhI7f22N+wayvS7t6vuS+fvoX7J4PVJbvyRk="}, {"s": "pssBp7oY57Wx/iMysS1rSg==", "iv": "GqVKiAau+EV5D9/j", "k": "Ws+laJjAREgDYfSzqNVDQPCLXc664IrhZMoaCQKNMsnUPbFgWK2wzX0On8E+X6QgAJJSueFxhJ0="}, {"s": "Ycejv+aCB5uxE5/FOC7/ng==", "iv": "kcLeVKXux0jkB4Qx", "k": "zvjbkoDcLLAUof5FfRrMS5v34x4mIioV3pfPNKi/CHFJt9hfYi8C5wBZhOhBVricWKFSNSp2hyU="}, {"s": "0pKqbH5S34xLplLwx0wi9w==", "iv": "BeLxgmuUMT56wjo/", "k": "csJX5mgALif/PoxbRawVUSUwROY+Qb/tvfUEeHyA/D78IWEvOVnwILfdVeGL6tR0r1L/riIapEM="}, {"s": "TyYDfNPotz90g0WA3gmalQ==", "iv": "pE0C42o57v5qhWeM", "k": "x82zhslru6paOcHQ0He/9Gk7MLbkdLcwJN9iapB7CTxDDU+RzKf2Jzv11uAI9YZImUCnXOSqtwY="}, {"s": "icdAIv1TM1pkEOiAk8PX+A==", "iv": "/gFQkN0MQlxCYpAk", "k": "cdCTs5FSEqUyBw9WrGhQfnMQaiIsTGJyCJqxoh+pu7nnjkkWLRaL517NTbb0IGmW0B6z0xwcOP4="}, {"s": "iUae7m7SqZWMlXQws24heQ==", "iv": "KjtkNHQxNVlyCWPi", "k": "X3/5hW8UMoYwpDMW2NNdUoyxHtMGXnrr+6tAGhkIw57/p5Q4thTJCKg4PbsWM9Mzp4fOIwaVPTE="}, {"s": "HHMy0MyyrYXhvkjYIl1eRQ==", "iv": "LfnKur2dW89/BVZo", "k": "D8YDyGCWj95ljj4MagEdkiTRTQfYOfC9pSu1QD4erQW7mD6qAPQkfIuJyso6cHyw4QbIBbSgUrw="}, {"s": "346XcrEHNZ/WwGKNq5hdxQ==", "iv": "UseWalLoncV9C2zI", "k": "HE/d9PnHBiBKvjJBKh1Kr6KUvepBmWSGrKxGytMqQrlperkAjiXaYPeOva4q6nhEQXaYhw=="}, {"s": "BxBrYQDbJ+7Rkf0rOoJI0g==", "iv": "w8lhBbE7/qCKirqm", "k": "p0JepWdjuPDQQE988ZFY9vr8A1OCcqFu/aIoa5An5FIo59DkRpkXXpDVy9Q4XccgiIKRDM4C8dw="}, {"s": "39EM0qxLvKywRXj2vuleeA==", "iv": "46otvpXCSZVXGhZh", "k": "XXsdX0ns2jp3zzmsbSut0pXR14fNTQYdJMhrfMtYrHBiVRJwOIakXzKWmypkL50Fn7TkQl/oC9o="}, {"s": "VI8ZoxboQ4JUCEISramilQ==", "iv": "zbny5E/x57XkA6NS", "k": "wfpjdBFTo1O1bs6RKA+gAKL6jh0vGfgFv6bmBvm0sToBMRd66ZUGn02VXbNCI6z3/nvInsZ+CUw="}, {"s": "IveYG8v2O367oTnaSXwwtA==", "iv": "HxXflrnas/8gsxNk", "k": "fph+poGjL0fOaoqNq07gUAwo9PbJ69344rCyUc1C1cvZlXaa0chH4447C8qRTAw6cCLD1TfQZPg="}, {"s": "RQ5ZZhGEDli7wgq2o4HdKA==", "iv": "4UQUrsprDkbPmQR2", "k": "dMR/rGU7UeOUfRTX5y3sEi4dhIXWGJ+03HvQCQjHe6CqjV1eKFz1g/jTIOlAGZ1yroGNWyu1pE4="}, {"s": "iT3j+QKzVbLhbOqd4KtLWg==", "iv": "iuzZOX6Ikt2HrCck", "k": "zlxT90lkFERUjf6D7YgF8Y2z+lKgKBsyD1pgHbQlV65FyW89kGfAZMINcQaWp3Nb8dcgvyq020o="}, {"s": "yk8kDpF3SysZEnA45BMTcA==", "iv": "5J1V4xV2fa7uRWPm", "k": "pCj1p6kM8cTd+vChsVSvSgGEhm4z9UB1MLa0FvGy47uCLUqsIeUDYsctBQfzF15PvuIzpoJ0DY8="}, {"s": "/EkY8cYmQ+lWbWxjAcc9Ag==", "iv": "NitWF82T/ixnaYRx", "k": "MAfbL0m9OKnwh47Nv/7Y8Q4TDSQ//aK/SCgnB2H+jYgjawQWy0Hv57Pz1kuENYhqepa+tQXQOgM="}, {"s": "N9nbiyvtCgaG0YH9aN9dig==", "iv": "b5PK09I/2wcmUFhz", "k": "pPRZYoxbfO8BTfzdQfy+xehbMrg7WiPgGFR9fwPgK8ojDYuQPhtNs+dwj2Yf6VpHZvcVTArUim0="}, {"s": "r/FmEwJ/0Xa8Sz3fh3oCgg==", "iv": "DG6xBzSVOrLoOMde", "k": "nweYj27ip3deA63Z4bAl5xUl7NfRuX8x+qWBpz7ERIE4cp97xYlaCTX3dyfMBWzoo1CkGMLP2Ug="}, {"s": "sNChJooofj0SURGE9Chzdw==", "iv": "BFYawlm81Mz9E422", "k": "VCXXtPVQtGGzY2lgktBcvBTOzkF/qDXJr6jWZ7mmrd+pm1OdkDOdhHWEtkUkTqUCp7z7KAO6fSU="}, {"s": "y6b2IonqrkClwfX0dsFZeg==", "iv": "geSnyvkfIV+kA/IU", "k": "Ol4bhFjlFGO7xglnsgy0zk87EhofLExuUEOz1zhwqg3dD0tHV/2JVsvE85ZVwh08oMHDGADUcX0="}, {"s": "CWo7ZCwqiruGSwVGY0HkOw==", "iv": "3gj99LuL1LByfBmE", "k": "chp/XL97CX/7Ye8fk288hkxnaii+L7GzgNJMQKFAa6yykvEG1mBu8Y844Gdt3eH0v+jVeZFQ91g="}, {"s": "gbasnp/6BOLTx5BMrZDAKA==", "iv": "7oinasU+nhctiBX+", "k": "bB5vkgW1y5t/7Fz6tLTLqQjUCUL94o9YCvXw2lX0oMfBCT5QNOfE7aHiL3GhURBqqselnTUiXto="}, {"s": "ITGadMxBcG8Qt4/GrON7nQ==", "iv": "/ZN7BovxnRuBvY0K", "k": "w8Y059rG1mgsvZ0bxkkBWJNV5w+rnFavjnkHr3tds2a1GpILFuram2I8SwhjNDI3SGbQvkHFNds="}, {"s": "LDlAWJN0s/konhJJlidWAQ==", "iv": "dO0bMB84thOKi6iO", "k": "ndnwpX7yjBK8gN39JGw7DF6guJ+wjaUJa5qiOz1XIRSOvM+e6AC8XQG6HLvLuDPRnBjY31DHTII="}, {"s": "l1DPlS0a19VYkYzN4JZVvw==", "iv": "8dXvFnCsO2jCg4U3", "k": "gej18lJW5pVpYFOzzMak9MJjkC5UdBZpGBzVa95eBMWWTES3iIOro9ncNurdHxIm/6wP1p7aHLI="}], "days": [{"n": 1, "ch": 1, "part": 1, "parts": 1, "chs": [1, 2], "textOnly": false, "title": "一切的起点", "words": 580}, {"n": 2, "ch": 2, "part": 1, "parts": 1, "chs": [3, 4, 5], "textOnly": false, "title": "蝎子、父亲与母亲", "words": 659}, {"n": 3, "ch": 3, "part": 1, "parts": 1, "chs": [6, 7], "textOnly": false, "title": "送别母亲", "words": 614}, {"n": 4, "ch": 4, "part": 1, "parts": 1, "chs": [8, 9, 10], "textOnly": false, "title": "风暴与传承", "words": 672}, {"n": 5, "ch": 5, "part": 1, "parts": 1, "chs": [11, 12, 13], "textOnly": false, "title": "父亲的领导课", "words": 666}, {"n": 6, "ch": 6, "part": 1, "parts": 1, "chs": [14, 15, 16], "textOnly": true, "title": "第一匹马，第一场赛马", "words": 654}, {"n": 7, "ch": 7, "part": 1, "parts": 1, "chs": [17, 18, 19], "textOnly": true, "title": "大海、兄长与剑桥", "words": 658}, {"n": 8, "ch": 8, "part": 1, "parts": 1, "chs": [20, 21], "textOnly": true, "title": "沙漠帐篷里的建国", "words": 606}, {"n": 9, "ch": 9, "part": 1, "parts": 1, "chs": [22, 23, 24], "textOnly": true, "title": "军校毕业，组建军队", "words": 613}, {"n": 10, "ch": 10, "part": 1, "parts": 1, "chs": [25, 26], "textOnly": true, "title": "小烟斗，烈烟草", "words": 603}, {"n": 11, "ch": 11, "part": 1, "parts": 1, "chs": [27, 28], "textOnly": true, "title": "一个国家的诞生", "words": 586}, {"n": 12, "ch": 12, "part": 1, "parts": 1, "chs": [29, 30], "textOnly": true, "title": "统一军队与劫机危机", "words": 555}, {"n": 13, "ch": 13, "part": 1, "parts": 1, "chs": [31, 32], "textOnly": true, "title": "政变与恐怖袭击", "words": 601}, {"n": 14, "ch": 14, "part": 1, "parts": 1, "chs": [33, 34, 35], "textOnly": true, "title": "团结与梦想", "words": 640}, {"n": 15, "ch": 15, "part": 1, "parts": 1, "chs": [36, 37], "textOnly": true, "title": "建好了，他们就会来", "words": 661}, {"n": 16, "ch": 16, "part": 1, "parts": 1, "chs": [38, 39, 40], "textOnly": true, "title": "远见与危机", "words": 688}, {"n": 17, "ch": 17, "part": 1, "parts": 1, "chs": [41, 42, 43], "textOnly": true, "title": "战争与告别", "words": 692}, {"n": 18, "ch": 18, "part": 1, "parts": 1, "chs": [44, 45], "textOnly": true, "title": "交通警察与扎耶德", "words": 621}, {"n": 19, "ch": 19, "part": 1, "parts": 1, "chs": [46, 47], "textOnly": true, "title": "名马传奇", "words": 633}, {"n": 20, "ch": 20, "part": 1, "parts": 1, "chs": [48, 49, 50], "textOnly": true, "title": "没有不可能", "words": 680}]}</script>
+<script>
+"use strict";
+const META = JSON.parse(document.getElementById("meta").textContent);
+const $ = id => document.getElementById(id);
+const BOOK = META.bookId;
+let DAY = 0, KEY = null, READER = "", TOKEN = "";
+const SKEY = "er:" + BOOK;           // progress key
+const CKEY = "er:code:" + BOOK;      // remembered code
+const INTERVALS = [1,3,7,14,30];
+
+/* ---------- storage (localStorage, with in-memory fallback) ---------- */
+let memStore = {}, storageOK = true;
+function sget(k){ try{ const v = localStorage.getItem(k); return v; }catch(e){ storageOK = false; return memStore[k] ?? null; } }
+function sset(k,v){ try{ localStorage.setItem(k,v); }catch(e){ storageOK = false; memStore[k] = v; } }
+function sdel(k){ try{ localStorage.removeItem(k); }catch(e){ delete memStore[k]; } }
+function loadProg(){
+  let p = null; try{ p = JSON.parse(sget(SKEY) || "null"); }catch(e){}
+  p = p || {};
+  p.days = p.days || {}; p.words = p.words || {}; p.clips = p.clips || {};
+  return p;
+}
+let PROG = loadProg();
+function saveProg(){ sset(SKEY, JSON.stringify(PROG)); if(typeof schedulePush === "function") schedulePush(); }
+const today = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const iso = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+const addDays = (n) => { const d = today(); d.setDate(d.getDate()+n); return iso(d); };
+
+function toast(msg, ms){ const t = $("toast"); t.textContent = msg; t.hidden = !msg; clearTimeout(toast.t); if(ms) toast.t = setTimeout(()=>t.hidden=true, ms); }
+
+/* ---------- crypto ---------- */
+const b64u8 = s => { const bin = atob(s); const u = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i] = bin.charCodeAt(i); return u; };
+async function tryCode(code){
+  code = code.trim().toUpperCase().replace(/\s+/g,"");
+  if(!code) return null;
+  if(!(window.crypto && crypto.subtle)) throw new Error("nocrypto");
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  for(const k of META.keys){
+    try{
+      const kek = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64u8(k.s), iterations:META.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      const raw = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(k.iv)}, kek, b64u8(k.k));
+      return {code, raw};
+    }catch(e){}
+  }
+  return null;
+}
+async function loadDayData(n){
+  const r = await fetch("d/day" + String(n).padStart(2,"0") + ".txt", {cache:"no-cache"});
+  if(!r.ok) throw new Error("下载失败（" + r.status + "）");
+  const [iv, ct] = (await r.text()).trim().split(".");
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(iv)}, KEY, b64u8(ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+/* ---------- lock screen ---------- */
+$("lkEyebrow").textContent = META.book + " · " + META.author;
+$("lkTitle").textContent = META.book;
+$("lkSub").textContent = "英文原书阅读 · 朗读 · 生词讲解 · 复习";
+let D = null;
+async function unlock(code, silent){
+  $("lkMsg").textContent = silent ? "" : "正在验证…";
+  $("unlock").disabled = true;
+  try{
+    const r = await tryCode(code);
+    if(!r){ $("lkMsg").textContent = silent ? "" : "授权码不对，请检查后再试。"; $("code").classList.remove("shake"); void $("code").offsetWidth; $("code").classList.add("shake"); return; }
+    const rawU = new Uint8Array(r.raw);
+    KEY = await crypto.subtle.importKey("raw", rawU.slice(0, 32), "AES-GCM", false, ["decrypt"]);
+    READER = new TextDecoder().decode(rawU.slice(32)) || "";
+    if($("remember").checked) sset(CKEY, r.code);
+    $("lkMsg").textContent = "";
+    TOKEN = await sha256hex(BOOK === "my-story-mbr" ? r.code : r.code + "|" + BOOK);
+    $("lock").hidden = true; showShelf(); syncPull();
+  }catch(e){
+    $("lkMsg").textContent = e.message === "nocrypto" ? "这个浏览器不能解锁。请用 Safari、Chrome 或 Edge 打开。" : "打开失败：" + (e.message || e);
+  }finally{ $("unlock").disabled = false; }
+}
+$("unlock").onclick = () => unlock($("code").value);
+$("code").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("code").value); });
+const saved = sget(CKEY); if(saved){ $("code").value = saved; unlock(saved, true); }
+
+/* ================= APP ================= */
+let audio, clip, urls = {}, SENTS = [], VOC = {}, FORMS = {}, seg = 0;
+try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}   // iPhone: play even when the silent switch is on
+function playSafe(el){ const p = el.play(); if(p && p.catch) p.catch(e => { if(e && e.name !== "AbortError") toast("没有播放出来（" + (e.name || "错误") + "）。请看看手机音量、静音键，再点一次播放。", 6000); }); }
+function blobUrl(b64){ return URL.createObjectURL(new Blob([b64u8(b64)], {type:"audio/mpeg"})); }
+function segUrl(k){ if(!urls[k]) urls[k] = blobUrl(D.audio.reading[k]); return urls[k]; }
+function fmt(t){ t = Math.max(0, t|0); return Math.floor(t/60) + ":" + String(t%60).padStart(2,"0"); }
+
+let barBound = false;
+function resetDayUI(){
+  if(audio){ audio.pause(); audio.removeAttribute("src"); }
+  if(clip){ clip.pause(); }
+  Object.values(urls).forEach(u => URL.revokeObjectURL(u)); urls = {};
+  Object.values(clipCache).forEach(u => URL.revokeObjectURL(u)); clipCache = {};
+  seg = 0; curK = -1;
+  document.querySelectorAll(".steps a").forEach(a => a.classList.remove("done"));
+  $("textWrap").classList.add("off"); $("showTxt").textContent = "显示英文";
+  $("wIn").value = ""; $("wCount").textContent = ""; $("wRes").innerHTML = "";
+  $("finMsg").hidden = true; $("pop").hidden = true;
+}
+function start(){
+  resetDayUI();
+  VOC = {}; D.vocab.forEach((v,i) => { v.i = i; VOC[v.w] = v; });
+  FORMS = D.forms;
+  if(!storageOK) toast("这个浏览器不能保存进度，请完成后复制备份码。", 6000);
+  $("hdEyebrow").textContent = META.book + " · " + META.author;
+  $("hdTitle").textContent = "Day " + DAY + "：" + D.chapter.title;
+  const mins = Math.round(D.segments.reduce((a,s) => a + s.dur, 0) / 60);
+  const words = D.segments.reduce((a,s) => a + s.words, 0);
+  $("hdLede").textContent = chLabel(D.chapter) + "，" + words + " 词，分 " + D.segments.length + " 段朗读，共约 " + mins + " 分钟。";
+  if(D.parts) $("readHint").textContent = $("readHint").textContent.replace("朗读按段播放，每段约 250–300 词。", "朗读按章播放，每段是一章的精华原文。");
+  const NOAUDIO = !D.audio.reading.length;
+  $("app").classList.toggle("noaudio", NOAUDIO); $("soonNote").hidden = !NOAUDIO;
+  if(NOAUDIO) $("hdLede").textContent = chLabel(D.chapter) + "，" + words + " 词，共 " + D.segments.length + " 章精华。";
+  buildText(); setupPlayer();
+  renderCards(); renderReview(); renderProg();
+  if(PROG.days[DAY] && PROG.days[DAY].steps) Object.keys(PROG.days[DAY].steps).forEach(markStep);
+  window.scrollTo(0, 0);
+}
+function dayRec(){ PROG.days[DAY] = PROG.days[DAY] || {steps:{}}; return PROG.days[DAY]; }
+function markStep(n){ const a = document.querySelector('.steps a[data-s="'+n+'"]'); if(a) a.classList.add("done"); const r = dayRec(); if(!r.steps[n]){ r.steps[n] = 1; saveProg(); } }
+/* ---------- bookshelf ---------- */
+const isDone = n => !!(PROG.days[n] && PROG.days[n].done);
+function showShelf(){
+  if(audio) audio.pause(); if(clip) clip.pause();
+  $("app").hidden = true; $("shelf").hidden = false; renderShelf(); window.scrollTo(0, 0);
+}
+if(META.libraryUrl){ $("toLib").href = META.libraryUrl; $("toLib").hidden = false; }
+const chLabel = c => c.chs ? (c.chs.length > 1 ? "第 " + c.chs[0] + "–" + c.chs[c.chs.length - 1] + " 章精华" : "第 " + c.chs[0] + " 章精华") : "第 " + (c.ch || c.n) + " 章" + ((c.parts || 1) > 1 ? " · 第 " + c.part + "/" + c.parts + " 部分" : "");
+const PREVIEW = () => READER === "Ting";
+function renderShelf(){
+  $("shEyebrow").textContent = META.author;
+  $("shTitle").textContent = META.book;
+  const done = META.days.filter(d => isDone(d.n)).length;
+  $("shLede").textContent = (META.perDay || "每天一章") + "，共 " + META.total + " 天。已完成 " + done + " 天，目前已更新到 Day " + META.days[META.days.length-1].n + "。前一天完成后，下一天才会打开。";
+  const box = $("days"); box.innerHTML = "";
+  const WK = META.weekDays || 7, FKEY = "er:fold:" + BOOK;
+  let fold = {}; try{ fold = JSON.parse(sget(FKEY) || "{}") || {}; }catch(e){}
+  const nextDay = (META.days.find(d => !isDone(d.n)) || META.days[META.days.length - 1]).n;
+  for(let w = 0; w * WK < META.days.length; w++){
+    const wk = document.createElement("div"); wk.className = "wk";
+    const days = META.days.slice(w*WK, w*WK+WK), nDone = days.filter(d => isDone(d.n)).length;
+    const isOpen = w in fold ? fold[w] : days.some(d => d.n === nextDay);   // default: only the week you're on is open
+    wk.classList.toggle("closed", !isOpen);
+    wk.innerHTML = '<div class="wkhead"><h3>第 ' + (w+1) + ' 周 · Day ' + (w*WK+1) + '–' + Math.min(w*WK+WK, META.total) + (nDone ? ' · 已完成 ' + nDone + '/' + days.length : '') + '</h3><button type="button" class="fold" aria-expanded="' + isOpen + '">' + (isOpen ? '收起 ▲' : '展开 ▼') + '</button></div>';
+    const fb = wk.querySelector(".fold");
+    fb.onclick = () => { const o = wk.classList.toggle("closed") ? false : true; fold[w] = o; sset(FKEY, JSON.stringify(fold)); fb.textContent = o ? "收起 ▲" : "展开 ▼"; fb.setAttribute("aria-expanded", o); };
+    META.days.slice(w*WK, w*WK+WK).forEach(d => {
+      const open = d.n === 1 || isDone(d.n - 1) || PREVIEW();   // PREVIEW: Ting's own code opens every day
+      const b = document.createElement("button"); b.type = "button"; b.className = "day"; b.disabled = !open;
+      const st = isDone(d.n) ? '<span class="pill done">✓ 已完成</span>' : open ? '<span class="pill">开始学习</span>' : '<span class="pill lock">🔒 先完成 Day ' + (d.n-1) + '</span>';
+      b.innerHTML = '<span class="dn">Day ' + d.n + '</span><span class="dt"><b></b><small>' + chLabel(d) + ' · ' + d.words + ' 词' + (d.textOnly ? ' · 文字版' : '') + '</small></span>' + st;
+      b.querySelector("b").textContent = d.title;
+      b.onclick = () => openDay(d.n);
+      wk.appendChild(b);
+    });
+    box.appendChild(wk);
+  }
+  const last = META.days[META.days.length-1].n;
+  if(last < META.total){ const p = document.createElement("div"); p.className = "soon"; p.textContent = "Day " + (last+1) + "–" + META.total + " 即将更新，链接不变，到时直接打开这个页面就能看到。"; box.appendChild(p); }
+  // due reviews on the shelf
+  const t = iso(today());
+  const due = Object.values(PROG.words).filter(r => !r.mastered && r.firstDone && r.next && r.next <= t && r.last !== t);
+  $("shDue").hidden = !due.length; $("shDueCount").textContent = due.length ? "（" + due.length + " 个）" : "";
+  const list = $("shDueList"); list.innerHTML = "";
+  due.sort((a,b) => b.wrong - a.wrong).forEach(r => list.appendChild(drill(r, tries => { grade(r, tries, false); })));
+  renderProg();
+}
+async function openDay(n){
+  toast("正在打开 Day " + n + "…");
+  try{
+    D = await loadDayData(n); DAY = n;
+    $("shelf").hidden = true; $("app").hidden = false; toast("");
+    start();
+  }catch(e){ toast("打开失败：" + (e.message || e) + "。请检查网络后再试。", 5000); }
+}
+$("toShelf").onclick = showShelf;
+
+/* ---------- reading text ---------- */
+function buildText(){
+  const t = $("text"); t.innerHTML = ""; SENTS = [];
+  const blocks = D.segments.map((sg, k) => {
+    const box = document.createElement("div"); box.className = "segtext"; box.dataset.seg = k; box.hidden = k !== 0;
+    if(D.parts){ const pt = D.parts[k]; const h = document.createElement("h3"); h.innerHTML = "<small>Chapter " + pt.ch + " · 精华</small>"; h.appendChild(document.createTextNode(pt.title)); box.appendChild(h);
+      if(pt.intro){ const ip = document.createElement("p"); ip.className = "intro"; ip.innerHTML = "<b>导读</b> "; ip.appendChild(document.createTextNode(pt.intro)); box.appendChild(ip); } }
+    else if(k === 0){ const h = document.createElement("h3"); h.innerHTML = "<small>Chapter " + (D.chapter.ch || D.chapter.n) + ((D.chapter.parts || 1) > 1 ? " · Part " + D.chapter.part + " of " + D.chapter.parts : "") + "</small>"; h.appendChild(document.createTextNode(D.chapter.title)); box.appendChild(h); }
+    const h4 = document.createElement("h4"); h4.textContent = "第 " + (k+1) + " 段 / " + D.segments.length + " · " + sg.words + " 词"; box.appendChild(h4);
+    t.appendChild(box); return box;
+  });
+  let el = null, lastP = -1, lastSeg = -1;
+  D.sents.forEach((s, k) => {
+    if(s.pi !== lastP || s.seg !== lastSeg){
+      el = document.createElement("p");
+      if((D.chapter.poem || []).includes(s.pi)) el.className = "poem";
+      blocks[s.seg].appendChild(el); lastP = s.pi; lastSeg = s.seg;
+    }
+    const sp = document.createElement("span"); sp.className = "s"; sp.textContent = s.t; sp.dataset.k = k;
+    sp.onclick = () => openPop(k);
+    el.appendChild(sp); el.appendChild(document.createTextNode(" "));
+    SENTS.push({el: sp, text: s.t, seg: s.seg, st: s.st});
+  });
+}
+function showSegText(k){ document.querySelectorAll(".segtext").forEach(b => b.hidden = +b.dataset.seg !== k); }
+$("showTxt").onclick = () => { const w = $("textWrap"); const on = w.classList.toggle("off"); $("showTxt").textContent = on ? "显示英文" : "隐藏英文"; };
+
+/* ---------- player (one audio per segment) ---------- */
+let curK = -1;
+const rate = () => +$("speed").value;
+function heard(){ return (dayRec().heard = dayRec().heard || {}); }
+function renderSegs(){
+  const box = $("segs"); box.innerHTML = "";
+  D.segments.forEach((s, k) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.innerHTML = (D.parts ? "第 " + D.parts[k].ch + " 章" : "第 " + (k+1) + " 段") + "<small>" + s.words + " 词" + (s.dur ? " · " + fmt(s.dur) : "") + "</small>";
+    if(k === seg) b.classList.add("on"); if(heard()[k]) b.classList.add("heard");
+    b.onclick = () => { loadSeg(k, true); };
+    box.appendChild(b);
+  });
+}
+function loadSeg(k, play, at){
+  if(!D.audio.reading.length){ seg = k; renderSegs(); showSegText(k); return; }
+  seg = k; audio.pause(); audio.src = segUrl(k);
+  audio.addEventListener("loadedmetadata", () => { audio.currentTime = at || 0; audio.playbackRate = rate(); if(play) playSafe(audio); upd(); }, {once:true});
+  renderSegs(); showSegText(k); upd();
+}
+function setupPlayer(){
+  audio = new Audio(); audio.preload = "auto"; clip = new Audio();
+  audio.addEventListener("error", () => {
+    if(audio.src.startsWith("blob:") && D.audio.reading[seg]){ urls[seg] = "data:audio/mpeg;base64," + D.audio.reading[seg]; audio.src = urls[seg]; audio.load(); }
+    else toast("录音加载失败，请检查网络后重新打开这一天。", 6000);
+  });
+  audio.addEventListener("timeupdate", upd);
+  audio.addEventListener("play", () => $("play").textContent = "❚❚ 暂停");
+  audio.addEventListener("pause", () => $("play").textContent = "▶ 播放");
+  audio.addEventListener("ended", () => {
+    heard()[seg] = 1; saveProg(); renderSegs();
+    if(Object.keys(heard()).length >= D.segments.length) markStep(1);
+    if(seg < D.segments.length - 1){
+      if($("autoNext").checked) loadSeg(seg + 1, true);
+      else toast("第 " + (seg+1) + " 段读完了。准备好了就点“第 " + (seg+2) + " 段”。", 4000);
+    } else toast("今天的内容读完了！把不会的词输入到第 2 步。", 4000);
+  });
+  $("play").onclick = () => { clip.pause(); if(audio.paused){ audio.playbackRate = rate(); playSafe(audio); } else audio.pause(); };
+  $("stop").onclick = () => { audio.pause(); audio.currentTime = 0; upd(); };
+  $("speed").onchange = () => { audio.playbackRate = rate(); };
+  const bar = $("bar");
+  if(barBound){ loadSeg(0, false); return; } barBound = true;
+  const seek = e => { const r = bar.getBoundingClientRect(); const f = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); audio.currentTime = f * (audio.duration || D.segments[seg].dur); upd(); };
+  bar.addEventListener("pointerdown", e => { seek(e); const mv = ev => seek(ev); bar.addEventListener("pointermove", mv); window.addEventListener("pointerup", () => bar.removeEventListener("pointermove", mv), {once:true}); });
+  bar.addEventListener("keydown", e => { if(e.key === "ArrowRight") audio.currentTime += 5; if(e.key === "ArrowLeft") audio.currentTime -= 5; });
+  loadSeg(0, false);
+}
+function upd(){
+  const dur = audio.duration || D.segments[seg].dur, t = audio.currentTime || 0;
+  $("tm").textContent = (D.parts ? "第 " + D.parts[seg].ch + " 章" : "第 " + (seg+1) + " 段") + " · " + fmt(t) + " / " + fmt(dur);
+  $("barFill").style.width = (100 * t / dur) + "%";
+  let k = -1;
+  for(let i = 0; i < SENTS.length; i++){ if(SENTS[i].seg !== seg) continue; const [s, e] = SENTS[i].st; if(t >= s - 0.05 && t < e + 0.3){ k = i; break; } }
+  if(k !== curK){
+    if(curK >= 0) SENTS[curK].el.classList.remove("cur");
+    curK = k;
+    if(k >= 0){ SENTS[k].el.classList.add("cur"); if($("follow").checked && !audio.paused && !$("textWrap").classList.contains("off")){ const r = SENTS[k].el.getBoundingClientRect(); if(r.top < 200 || r.bottom > innerHeight - 40) SENTS[k].el.scrollIntoView({block:"center", behavior:"smooth"}); } }
+  }
+}
+/* play one sentence from its segment audio (book sentence) */
+let segStop = null;
+function playSeg(k){
+  const s = SENTS[k], [a, e] = s.st;
+  audio.pause(); clip.pause(); clearInterval(segStop);
+  clip.src = segUrl(s.seg); clip.playbackRate = 1;
+  const go = () => { clip.currentTime = a; playSafe(clip); segStop = setInterval(() => { if(clip.currentTime >= e){ clip.pause(); clearInterval(segStop); } }, 50); };
+  if(clip.readyState >= 1) go(); else clip.addEventListener("loadedmetadata", go, {once:true});
+}
+/* sentence popover */
+let popK = -1;
+function openPop(k){
+  popK = k; $("pop").hidden = false;
+  const chips = $("popChips"); chips.innerHTML = "";
+  const words = (SENTS[k].text.match(/[A-Za-z][A-Za-z’'-]*[A-Za-z]|[A-Za-z]/g) || []);
+  const cur = new Set(splitWords($("wIn").value).map(x => x.toLowerCase()));
+  words.forEach(w => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = w;
+    const clean = w.replace(/[’']s$/,"").toLowerCase();
+    if(cur.has(clean)) b.classList.add("on");
+    b.onclick = () => { const list = splitWords($("wIn").value); const i = list.findIndex(x => x.toLowerCase() === clean);
+      if(i >= 0){ list.splice(i,1); b.classList.remove("on"); } else { list.push(clean); b.classList.add("on"); }
+      $("wIn").value = list.join(", "); $("wCount").textContent = list.length ? "生词框里有 " + list.length + " 个词" : ""; };
+    chips.appendChild(b);
+  });
+}
+$("popClose").onclick = () => { $("pop").hidden = true; };
+$("popPlay").onclick = () => { clip.pause(); const s = SENTS[popK]; if(s.seg !== seg) loadSeg(s.seg, true, s.st[0]); else { audio.currentTime = s.st[0]; audio.playbackRate = rate(); playSafe(audio); } $("pop").hidden = true; };
+$("popSay").onclick = () => playSeg(popK);
+$("readDone").onclick = () => { markStep(1); location.hash = "#s2"; };
+
+/* ---------- word clips ---------- */
+let clipCache = {};
+function wordUrl(v, kind){ const key = kind + v.i; if(!clipCache[key]) clipCache[key] = blobUrl(D.audio[kind][v.i]); return clipCache[key]; }
+function playUrl(u, slow){ if(audio) audio.pause(); if(!clip) clip = new Audio(); clip.pause(); clearInterval(segStop); clip.src = u; clip.playbackRate = slow ? 0.75 : 1; playSafe(clip); }
+function sayWord(w, slow){
+  const v = VOC[w];
+  if(v) return playUrl(wordUrl(v, "w"), slow);
+  const rec = PROG.clips[w];     // a word from an earlier day: its recording was saved when it was added
+  if(rec) return playUrl(blobUrl(rec), slow);
+  const wr = PROG.words[w];
+  if(wr && wr.day && META.days.some(d => d.n === wr.day)){   // e.g. progress restored on a new device: get the clip from that day's file
+    clipFromDay(w, wr.day).then(b => { if(b) playUrl(blobUrl(b), slow); else speakTTS(w, slow); });
+    return;
+  }
+  speakTTS(w, slow);
+}
+const dayCache = {};
+async function clipFromDay(w, n){
+  try{
+    if(!dayCache[n]) dayCache[n] = loadDayData(n);
+    const d = await dayCache[n]; const i = d.vocab.findIndex(v => v.w === w);
+    if(i < 0) return null;
+    PROG.clips[w] = d.audio.w[i]; sset(SKEY, JSON.stringify(PROG)); return d.audio.w[i];
+  }catch(e){ return null; }
+}
+function speakTTS(w, slow){
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(w); u.lang = "en-US"; u.rate = slow ? 0.7 : 0.95; speechSynthesis.speak(u); }catch(e){}
+}
+function btn(label, fn, cls){ const b = document.createElement("button"); b.type = "button"; b.className = cls || "say"; b.textContent = label; b.onclick = fn; return b; }
+
+/* ---------- word input ---------- */
+function splitWords(s){ return s.split(/[,，、;\n]+/).map(x => x.trim()).filter(Boolean); }
+$("wIn").addEventListener("input", () => { const n = splitWords($("wIn").value).length; $("wCount").textContent = n ? "生词框里有 " + n + " 个词" : ""; });
+function lookup(q){
+  let s = q.toLowerCase().replace(/[’‘]/g,"'").replace(/^[^a-z]+|[^a-z]+$/g,"").replace(/'s$/,"");
+  if(FORMS[s]) return FORMS[s];
+  const tries = [s.replace(/ies$/,"y"), s.replace(/es$/,""), s.replace(/s$/,""), s.replace(/ed$/,""), s.replace(/d$/,""), s.replace(/ing$/,""), s.replace(/ing$/,"e"), s.replace(/ly$/,"")];
+  for(const t of tries) if(FORMS[t]) return FORMS[t];
+  return null;
+}
+function lev(a, b){ const m = a.length, n = b.length, d = Array.from({length:m+1}, (_, i) => [i, ...Array(n).fill(0)]); for(let j=1;j<=n;j++) d[0][j] = j; for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1] + (a[i-1]===b[j-1]?0:1)); return d[m][n]; }
+function suggest(q){ q = q.toLowerCase(); let best = null, bd = q.length <= 5 ? 2 : 3; for(const f in FORMS){ if(Math.abs(f.length - q.length) > 2) continue; const d = lev(q, f); if(d < bd){ bd = d; best = FORMS[f]; } } return best; }
+const BOOKTEXT = () => SENTS.map(s => s.text).join(" ").toLowerCase().replace(/’/g,"'");
+$("wBtn").onclick = () => {
+  const items = splitWords($("wIn").value); if(!items.length) return;
+  const out = $("wRes"); out.innerHTML = ""; const added = [], miss = [];
+  items.forEach(q => {
+    const h = lookup(q);
+    if(h){ addWord(VOC[h]); added.push(q.toLowerCase() === h ? h : q + " → " + h); }
+    else {
+      const inBook = new RegExp("(^|[^a-z])" + q.toLowerCase().replace(/[^a-z'-]/g,"") + "([^a-z]|$)").test(BOOKTEXT());
+      const sg = suggest(q);
+      miss.push(inBook ? "<b>" + q + "</b>：这是很基础的词，没有收在今天的词表里" : "<b>" + q + "</b>：今天的内容里没有这个词" + (sg ? "，你是不是想找 <b>" + sg + "</b>？" : "，请检查拼写"));
+    }
+  });
+  if(added.length){ const p = document.createElement("p"); p.className = "ok"; p.textContent = "✓ 已加入我的生词：" + added.join("、"); out.appendChild(p); $("wIn").value = ""; $("wCount").textContent = ""; markStep(2); }
+  miss.forEach(m => { const p = document.createElement("p"); p.className = "bad"; p.innerHTML = m; out.appendChild(p); });
+  renderCards(); renderReview(); renderProg();
+  if(added.length) toast("已加入 " + added.length + " 个词，往下看讲解。", 2500);
+};
+function addWord(v){
+  if(PROG.words[v.w] && PROG.words[v.w].day === DAY) return;
+  if(PROG.words[v.w]) return;   // already learned on an earlier day
+  PROG.words[v.w] = {w:v.w, pos:v.pos, zh:v.zh, ipa:v.ipa, day:DAY, added:iso(today()), stage:0, next:addDays(1), wrong:0, firstDone:false};
+  // keep the word's pronunciation for reviews in later days' files
+  PROG.clips[v.w] = D.audio.w[v.i];
+  saveProg();
+}
+function removeWord(w){ delete PROG.words[w]; delete PROG.clips[w]; saveProg(); renderCards(); renderReview(); renderProg(); }
+
+/* ---------- cards ---------- */
+function esc(s){ return s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function hlBook(v){
+  const forms = Object.keys(FORMS).filter(f => FORMS[f] === v.w).sort((a,b) => b.length - a.length);
+  let s = esc(v.book);
+  for(const f of forms){ const rx = new RegExp("(^|[^A-Za-z])(" + f.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/'/g,"['’]") + ")(?![A-Za-z])", "i"); if(rx.test(s)){ s = s.replace(rx, "$1<b>$2</b>"); break; } }
+  return s;
+}
+function bookSentK(v){ return SENTS.findIndex(s => s.text === v.book); }
+function renderCards(){
+  const box = $("cards"); box.innerHTML = "";
+  const list = Object.values(PROG.words).filter(r => r.day === DAY && VOC[r.w]).map(r => VOC[r.w]);
+  if(!list.length){ box.innerHTML = '<div class="panel note">还没有生词。先在第 2 步输入。</div>'; return; }
+  list.forEach(v => {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = `<div class="top"><div><span class="w">${esc(v.w)}</span><span class="ipa">${esc(v.ipa)}</span></div><div class="row act"></div></div>
+      <p class="cn"><span class="pos">${esc(v.pos)}</span>${esc(v.zh)}</p>
+      <dl class="dl"><dt>书里</dt><dd class="ex"><span class="book">${hlBook(v)}</span></dd>
+      <dt>例句</dt><dd class="ex"><span>${esc(v.ex)}<i>${esc(v.exzh)}</i></span></dd></dl>
+      ${v.note ? `<p class="tip">💡 ${esc(v.note)}</p>` : ""}`;
+    const act = c.querySelector(".act");
+    act.append(btn("🔊 正常", () => sayWord(v.w)), btn("🐢 慢速", () => sayWord(v.w, true)), btn("移出", () => removeWord(v.w), "rm"));
+    const dds = c.querySelectorAll("dd.ex");
+    const k = bookSentK(v); if(k >= 0) dds[0].appendChild(btn("🔊", () => playSeg(k)));
+    dds[1].appendChild(btn("🔊", () => playUrl(wordUrl(v, "e"))));
+    box.appendChild(c);
+  });
+}
+$("cardsDone").onclick = () => { markStep(3); location.hash = "#s4"; };
+
+/* ---------- review ---------- */
+function drill(r, onDone){
+  const el = document.createElement("div"); el.className = "drill";
+  el.innerHTML = `<div class="q">${esc(r.zh)}<small>${esc(r.pos)}</small>${r.wrong >= 2 ? '<span class="tag">错过 ' + r.wrong + ' 次</span>' : ""}</div>`;
+  const line = document.createElement("div"); line.className = "line";
+  const inp = document.createElement("input"); inp.type = "text"; inp.autocomplete = "off"; inp.spellcheck = false; inp.setAttribute("autocapitalize","off"); inp.setAttribute("autocorrect","off"); inp.setAttribute("aria-label", r.zh + " 的英文");
+  const b = document.createElement("button"); b.type = "button"; b.className = "btn small"; b.textContent = "提交";
+  const fb = document.createElement("div"); fb.className = "fb";
+  let tries = 0, fin = false, sb = null;
+  const check = () => {
+    if(fin) return; const val = inp.value.trim().toLowerCase().replace(/\s+/g," "); if(!val) return;
+    if(val === r.w.toLowerCase()){
+      fin = true; el.classList.remove("bad"); el.classList.add("ok"); inp.readOnly = true; b.disabled = true;
+      fb.className = "fb ok"; fb.textContent = tries ? "✓ 对了（错了 " + tries + " 次，明天再复习）" : "✓ 正确"; sayWord(r.w); onDone(tries); return;
+    }
+    tries++; el.classList.add("bad"); inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake");
+    if(!sb){ sb = btn("🔊 听发音", () => sayWord(r.w, true)); line.appendChild(sb); }
+    fb.className = "fb bad";
+    if(tries === 1) fb.textContent = "不对，不能提交。点 🔊 听一下发音，再试一次。";
+    else if(tries === 2) fb.textContent = "提示：以 “" + r.w[0] + "” 开头，共 " + r.w.replace(/[ -]/g,"").length + " 个字母" + (/[ -]/.test(r.w) ? "（中间有空格或连字符）" : "") + "。";
+    else { fb.innerHTML = "答案是 <b>" + esc(r.w) + "</b>，照着写一遍。"; }
+  };
+  b.onclick = check; inp.addEventListener("keydown", e => { if(e.key === "Enter") check(); });
+  line.prepend(inp, b); el.append(line, fb); return el;
+}
+function grade(r, tries, isNew){
+  if(isNew){ r.firstDone = true; r.next = addDays(1); r.stage = 0; if(tries) r.wrong++; }
+  else if(tries){ r.wrong++; r.stage = 0; r.next = addDays(1); }
+  else { r.stage++; if(r.stage >= INTERVALS.length){ r.mastered = true; r.next = null; } else r.next = addDays(INTERVALS[r.stage]); }
+  r.last = iso(today()); saveProg(); renderProg(); finInfo();
+}
+let dueList = [], newList = [];
+function renderReview(){
+  const t = iso(today());
+  dueList = Object.values(PROG.words).filter(r => !r.mastered && r.firstDone && r.next && r.next <= t && r.last !== t);
+  newList = Object.values(PROG.words).filter(r => r.day === DAY && !r.firstDone);
+  const dueBox = $("due"); dueBox.innerHTML = "";
+  if(!dueList.length) dueBox.innerHTML = '<p class="note">今天没有到期的旧词。</p>';
+  dueList.sort((a,b) => b.wrong - a.wrong).forEach(r => dueBox.appendChild(drill(r, tries => { grade(r, tries, false); })));
+  $("dueCount").textContent = dueList.length ? "（" + dueList.length + " 个）" : "";
+  const nb = $("newDrill"); nb.innerHTML = "";
+  if(!newList.length) nb.innerHTML = '<p class="note">' + (Object.values(PROG.words).some(r => r.day === DAY) ? "今天的生词都测过了 ✓" : "先在第 2 步输入生词。") + '</p>';
+  newList.forEach(r => nb.appendChild(drill(r, tries => { grade(r, tries, true); })));
+  $("newCount").textContent = newList.length ? "（" + newList.length + " 个）" : "";
+  finInfo();
+}
+function pending(){ const t = iso(today()); return Object.values(PROG.words).filter(r => (r.day === DAY && !r.firstDone) || (!r.mastered && r.firstDone && r.next && r.next <= t && r.last !== t)).length; }
+function finInfo(){
+  const n = pending(), rec = PROG.days[DAY];
+  if(rec && rec.done) $("finInfo").textContent = "Day " + DAY + " 已在 " + rec.done + " 完成。";
+  else $("finInfo").textContent = n ? "还有 " + n + " 个词没复习完。" : "复习都做完了，可以完成今天了。";
+}
+$("finish").onclick = () => {
+  if(pending()){ toast("还有词没复习完，做完再点完成。", 3000); return; }
+  const r = dayRec(); r.done = iso(today()); r.steps[4] = 1; saveProg(); markStep(4);
+  renderProg(); finInfo();
+  const m = $("finMsg"); m.hidden = false;
+  const nextUp = META.days.some(d => d.n === DAY + 1);
+  m.innerHTML = DAY >= META.total ? "🎉 全书读完了！" : nextUp ? "🎉 Day " + DAY + " 完成！Day " + (DAY+1) + " 已经打开，明天回到书架继续。到期的生词会自动出现在复习里。" : "🎉 Day " + DAY + " 完成！Day " + (DAY+1) + " 还没更新，到时回到书架就能看到。";
+  const back = document.createElement("button"); back.className = "btn ghost small"; back.style.marginLeft = "8px"; back.textContent = "返回书架"; back.onclick = showShelf; m.appendChild(back);
+};
+
+/* ---------- automatic sync (Google Sheet via Apps Script) ---------- */
+async function sha256hex(s){ const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s.trim().toUpperCase().replace(/\s+/g, ""))); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, "0")).join(""); }
+let pushTimer = null, pushing = false, pushAgain = false;
+function syncNote(t){ const e = $("syncState"); if(e) e.textContent = t; }
+function summary(){
+  const ws = Object.values(PROG.words), t = iso(today());
+  const done = Object.keys(PROG.days).filter(k => PROG.days[k].done).map(Number).sort((a, b) => a - b);
+  const dates = Object.values(PROG.days).map(d => d.done).filter(Boolean).concat(ws.map(w => w.last || w.added).filter(Boolean)).sort();
+  return {done: done.length, lastDay: done.length ? done[done.length - 1] : 0, last: dates.length ? dates[dates.length - 1] : "",
+    words: ws.length, mastered: ws.filter(w => w.mastered).length, due: ws.filter(w => !w.mastered && w.next && w.next <= t).length,
+    weak: ws.filter(w => w.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 8).map(w => w.w + "×" + w.wrong).join("、")};
+}
+function schedulePush(){ if(!META.syncUrl || !TOKEN) return; clearTimeout(pushTimer); pushTimer = setTimeout(syncPush, 2000); }
+async function syncPush(){
+  if(!META.syncUrl || !TOKEN) return;
+  if(pushing){ pushAgain = true; return; }
+  pushing = true;
+  try{
+    const body = JSON.stringify({t: TOKEN, book: BOOK, label: READER, name: PROG.name || "", sum: summary(), data: {name: PROG.name || "", days: PROG.days, words: PROG.words}});
+    const r = await fetch(META.syncUrl, {method: "POST", body, keepalive: body.length < 60000});
+    const j = await r.json().catch(() => ({ok: true}));
+    syncNote(j.ok === false ? "⚠️ 同步失败，稍后会再试" : "☁️ 已同步 " + new Date().toTimeString().slice(0, 5));
+  }catch(e){ syncNote("⚠️ 现在没联网，进度先存在这台设备上，联网后自动同步"); }
+  finally{ pushing = false; if(pushAgain){ pushAgain = false; schedulePush(); } }
+}
+function mergeProg(remote){
+  if(!remote) return false;
+  let changed = false;
+  if(remote.name && !PROG.name){ PROG.name = remote.name; changed = true; }
+  for(const [k, d] of Object.entries(remote.days || {})){
+    const l = PROG.days[k];
+    if(!l){ PROG.days[k] = d; changed = true; continue; }
+    if(d.done && !l.done){ l.done = d.done; changed = true; }
+    l.steps = Object.assign({}, d.steps || {}, l.steps || {});
+  }
+  for(const [w, r] of Object.entries(remote.words || {})){
+    const l = PROG.words[w];
+    const score = x => (x.last || "") + "|" + String(x.stage || 0).padStart(2, "0") + "|" + (x.firstDone ? 1 : 0);
+    if(!l || score(r) > score(l)){ PROG.words[w] = r; changed = true; }
+  }
+  return changed;
+}
+async function syncPull(){
+  if(!META.syncUrl || !TOKEN) return;
+  syncNote("☁️ 正在同步…");
+  try{
+    const r = await fetch(META.syncUrl + "?t=" + TOKEN + "&b=" + encodeURIComponent(BOOK));
+    const j = await r.json();
+    if(j && j.ok && mergeProg(j.data)){ sset(SKEY, JSON.stringify(PROG)); if(!$("shelf").hidden) renderShelf(); }
+    syncNote("☁️ 已同步 " + new Date().toTimeString().slice(0, 5));
+    syncPush();
+  }catch(e){ syncNote("⚠️ 现在没联网，进度先存在这台设备上，联网后自动同步"); }
+  askName();
+}
+function otherName(){
+  try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i);
+    if(k && k.startsWith("er:") && !k.startsWith("er:code:") && k !== SKEY){ const n = (JSON.parse(localStorage.getItem(k) || "{}") || {}).name; if(n) return n; } } }catch(e){}
+  return "";
+}
+function askName(){
+  if(PROG.name) return;
+  const n = otherName(); if(n){ PROG.name = n; saveProg(); if(pushTimer) clearTimeout(pushTimer); syncPush(); return; }
+  $("nameAsk").hidden = false; $("nameAsk").style.display = "flex";
+  const inp = $("nameIn"), ok = $("nameOk");
+  inp.oninput = () => { ok.disabled = !inp.value.trim(); };
+  const go = () => { const v = inp.value.trim().slice(0, 30); if(!v) return; PROG.name = v; $("nameAsk").hidden = true; $("nameAsk").style.display = "none"; saveProg(); if(pushTimer){ clearTimeout(pushTimer); } syncPush(); };
+  ok.onclick = go; inp.onkeydown = e => { if(e.key === "Enter") go(); };
+  setTimeout(() => inp.focus(), 50);
+}
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "hidden" && pushTimer){ clearTimeout(pushTimer); syncPush(); } });
+
+/* ---------- progress / backup ---------- */
+function renderProg(){
+  const ws = Object.values(PROG.words), done = Object.values(PROG.days).filter(d => d.done).length;
+  const t = iso(today()), due = ws.filter(r => !r.mastered && r.next && r.next <= t).length;
+  $("prog").textContent = "已完成 " + done + " / " + META.total + " 天 · 生词 " + ws.length + " 个（已掌握 " + ws.filter(r => r.mastered).length + "）· 今天到期 " + due + " 个";
+}
+$("logout").onclick = () => { sdel(CKEY); location.reload(); };
+document.querySelectorAll(".steps a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"}); }));
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>英文原书图书馆</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<style>
+:root{
+  --bg:#f5f6f8; --paper:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
+  --accent:#2747b8; --accent-soft:#e6ebfb; --ok:#1f7a4d; --ok-soft:#e3f4ea;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Songti SC","STSong",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding:0 16px}
+.wrap{max-width:860px;margin:0 auto;padding-block:28px 80px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0}
+h1{font-size:clamp(28px,6vw,40px)}
+p{margin:0}
+[hidden]{display:none!important}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lede{color:var(--muted);margin-top:8px}
+.note{font-size:14px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:16px}
+.btn{font:600 15px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:9px 16px;cursor:pointer;min-height:40px}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{font-size:13px;padding:5px 10px;min-height:32px}
+#lock{min-height:80vh;display:flex;align-items:center}
+#lock .panel{width:100%;max-width:440px;margin:0 auto;padding:28px}
+#code{width:100%;font:600 20px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:22px}
+.book{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+a.book:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,30,60,.12)}
+.cover{aspect-ratio:3/4;padding:16px 14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.cover .t{font-family:var(--display);font-size:clamp(17px,4.6vw,23px);line-height:1.15;font-weight:600}
+.cover .a{font-size:12px;letter-spacing:.06em;opacity:.85}
+.cover .rule{width:44px;height:3px;border-radius:2px;background:currentColor;opacity:.7;margin:14px 0}
+.cover .lockico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px;background:rgba(20,24,34,.45)}
+.cover .jc{position:absolute;right:12px;top:12px;font:600 9px var(--body);letter-spacing:.22em;opacity:.45}
+.meta{padding:12px 12px 14px}
+.meta b{font-family:var(--display);font-size:15px;line-height:1.3;display:block}
+.bar{height:6px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tag{display:inline-block;font:600 12px var(--body);border-radius:999px;padding:2px 9px;margin-top:8px}
+.tag.go{background:var(--ok-soft);color:var(--ok)} .tag.new{background:var(--accent-soft);color:var(--accent)} .tag.off{background:var(--line);color:var(--muted)}
+.book.locked{opacity:.75;cursor:default}
+.demo{background:#fff3d6;color:#8a5a00;border-radius:8px;padding:8px 12px;font-size:14px;margin-top:14px}
+@media (prefers-color-scheme: dark){.demo{background:#3a2f12;color:#f3c66b}}
+/* Journey brand banner (library home) */
+.jhero{margin:0 -16px 26px;padding:34px 22px 30px;background:linear-gradient(135deg,#1f3b57 0%,#2c5378 60%,#3a6a8f 100%);color:#f6ead0;position:relative;overflow:hidden}
+.jhero:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;border:1px solid rgba(241,220,174,.25)}
+.jhero .t{font:600 44px/1 var(--display);letter-spacing:.01em}
+.jhero .s{margin-top:10px;font:500 16px var(--body);letter-spacing:.18em;color:#f1dcae}
+.jhero .r{width:46px;height:2px;background:#f1dcae;opacity:.7;margin:18px 0 14px}
+.jhero .d{font-size:14px;opacity:.85}
+#lib{padding-top:0}
+@media(min-width:900px){#lib{padding-top:28px}.jhero{margin:0 0 26px;border-radius:16px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="lock">
+  <div class="panel">
+    <p class="eyebrow">English Reading Club</p>
+    <h1 style="margin-top:6px">英文原书图书馆</h1>
+    <p class="lede">一起读英文原书 · 朗读 · 生词讲解 · 复习</p>
+    <label for="code" class="note" style="display:block;margin-top:18px">请输入授权码</label>
+    <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="例如 ABCD-1234">
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center"><button class="btn" id="unlock">进入图书馆</button><span class="note" id="msg" role="alert"></span></div>
+  </div>
+</div>
+
+<div class="wrap" id="lib" hidden>
+  <div class="jhero"><div class="t">Journey</div><div class="s">AI 人生成长社</div><div class="r"></div><div class="d">一起读英文原书，一点点成长</div></div>
+  <p class="eyebrow">English Reading Club · 英文原书图书馆</p>
+  <h1 style="margin-top:6px" id="hello">英文原书图书馆</h1>
+  <p class="lede" id="libLede"></p>
+  <p class="demo" id="demoNote" hidden></p>
+  <div class="grid" id="grid"></div>
+  <div style="margin-top:28px;display:flex;justify-content:flex-end"><button class="btn ghost small" id="logout">退出授权</button></div>
+</div>
+
+<div id="nameAsk" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:16px;z-index:50">
+  <div class="panel" style="width:100%;max-width:400px;margin:0">
+    <div style="font-size:40px;line-height:1">🎉</div>
+    <h3 style="margin-top:8px;font-size:20px">欢迎加入 Journey 共读！</h3>
+    <p style="margin-top:8px;line-height:1.7">太开心你来了！接下来我们每天读一点，<b>听原声、学生词、一起复习</b>，一点点把整本英文原书读完 📖✨</p>
+    <p class="note" style="margin-top:6px">先告诉我们怎么称呼你吧～（只有发书的人能看到）</p>
+    <input id="nameIn" maxlength="30" autocomplete="name" placeholder="你的名字或昵称" style="width:100%;font:600 18px var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:12px">
+    <div style="margin-top:12px"><button class="btn" id="nameOk" disabled>开始我的阅读之旅 →</button></div>
+  </div>
+</div>
+<script>
+const BOOKS = [{"id": "my-story-20d", "url": "my-story/", "bg": "#1f3b57", "fg": "#f1dcae", "title": "My Story", "author": "Mohammed bin Rashid Al Maktoum", "total": 20, "perDay": "4 周精读 · 每天 2–3 章精华", "published": 20, "iter": 150000, "keys": [{"s": "bhc8QoTpf+p/mvJuCcH7pg==", "iv": "5nnVfiF4rmymOd8/", "k": "tJ01Y7n4HIeYOjhPR2BG5DfXPdDnhne5RTrAUWzu8gyTlyVTuJF0PnWGyzT3g7Gl7COIUNvtvug="}, {"s": "Gtfi9inOZr2tsO1Nr+mBOw==", "iv": "ilPyHaZoQeJeDcAR", "k": "ilt6c8KsYT5r+Em5H8eB5T9HMjuzD/PKLSE7PmAS5NWaLU7fHLUd3Db+Zn5ID+HBtI7Zb2RlcS8="}, {"s": "WfuiLNaxF7WgrVFRsXHDbQ==", "iv": "kjZ36lSTrKf1ENJF", "k": "y5I/LSlQ3CG6QAWq4AwHtGX3RYmFOT8vrY5k362fcS92+wojoKea17WnfpFNnmZEQtWJCT8ao/c="}, {"s": "Z3m7vJgv4qgCbQu7XynKdQ==", "iv": "PVWXVttoO63W0zBm", "k": "NsxitFTSEPkOXOF2HLAri3QGPJRZBe7illZ8A/3SKqJvu7A0I09tBpiPjs7mnlLPzKYcqWyq+pw="}, {"s": "LC5DBGvO8nW5X+HduxwSDw==", "iv": "RB9X2ilBnlRaFWQm", "k": "VhCkyHgxjWR2WUF3X/q3FM2rnMK+L4ucfpoMXoWq6TSjhBFYOgPOSfH2vMQv4nHL9UIpNn9gjSw="}, {"s": "yQoRcBSRbltpgtK8GcA2GQ==", "iv": "47mhTckWDjxNaNfM", "k": "A76/MHe6vu1s10lFtADcNsSDMRbI6DbavjqubsGi6UwWTlI0evRUOWlDBbuP0onMJoNZesHX1zc="}, {"s": "GUkyZOns7X/ZsBZ+PECgxg==", "iv": "BtZ7vrKt8ScDOQsU", "k": "HEtNsRbMC5AZLNIaymC2YjudhePronWkh1af38bSGYazsKRvm0vvxwh96AI49SEtbosEvAAGHWQ="}, {"s": "diulTOabo8vYfHrWMH04sw==", "iv": "Nt5DK2Q+y/PrNCYI", "k": "NMIuA7+D8wggHZvszY0dkz2vvI1YVNR/ch+JZzSzL6Y7rhfJVs4kLYbLC5e0y4yOeElNhIFtrmI="}, {"s": "Z/nWArVZqvlC1+YO5POgGQ==", "iv": "noROwXpuMW2J6RnQ", "k": "HEYqKlVDdhy5CCHiEYj9yumx3nFmXVDuqyvCRirHfCAShZDSQmUlaYGGOlXcsnxhnXL4Mw=="}, {"s": "z07y+WSz3Ra2vWHxbM0ASA==", "iv": "csg6V4Vw6b2kc6Lx", "k": "o9laxmvTxjJNeAkGdGldpNX85WtOSGouko2k+1Hzw7B2tsi9VjbjnUjDsV+7pkLaxMcYEu2PATo="}, {"s": "VZBa3EyQumBwAC7x9y1c+A==", "iv": "/Dyzki/AW+7Gq4j2", "k": "jadRZ+zFymaNjMExoC7r0Tcnc8Jl/jiuQ5KDmwfRcf0Z+VXK4/wuqQ7qI4pHDv567kjJtEStDZE="}, {"s": "3KubwI/SFGsXqY4GiwLw3A==", "iv": "cna//erl6+eHYFUg", "k": "vKjCVWcfUFZd0yWNrsO/5smXbXAdxhpjXZYSsae0Y8d+BsXr9t0jrXz0E1a+dKyYcfylQCRamUs="}, {"s": "C4R3z/5Ub7dhDpPabDXGdg==", "iv": "ruEaqB6SygM5QXFe", "k": "s/BONTWjOz4cWxGJwNH0fD3ncCdcGcl1IyhQ5haN1RDAP3GDQKn8VluTHYV60WA54KIyz21Dhas="}, {"s": "/rf0pznM9jKx+emen0ksow==", "iv": "Y9MbQpewLEEA6U1Y", "k": "oib2AHw49TKrz3vJ9Wv5jdh1oS2mPGDRsy2X5qUYbPujfQ3Qoep3OoeyqQK+2xCxzd91bvHT6HU="}, {"s": "QUOBpmNhFw5tsbqp8UG70Q==", "iv": "+SZT9fEnyCwDZpNF", "k": "9S9lOMx2zZRQhEDqiF+jOY6vJ5uZcftKq8tR8LLxH5bmvp+W2srbG2hCRWWaidwSnpjLUZLdXUo="}, {"s": "khCmNuHTcVBB8VUDQPIRCw==", "iv": "28hHxW6sDwFB5EYu", "k": "G9jShOC3tZPujIGoAYe0zQ1mqyCRU1xYLByPArImjxWInu96r/6/HOA6vPqvqm/gsaq1rhqFYK0="}, {"s": "BCG/J3isvIy+drhLmOKCvg==", "iv": "bmgGZrHY3FWQgdj1", "k": "XlBMS93Hbrn5rxsFmaOlBm7dAHDNij0lw/AOZckDm6zjk0rxEkTQsVtgPTQhYBpfoVuXD/16xmI="}, {"s": "+bBlJNi3OiZX4wJWCGRksQ==", "iv": "i/FlRdzCjzIZD7h6", "k": "aOkjzesWC1O+G5dQyl11H7u6EVKY6R0trtwfLV7dmE0twHj666BEhZGILUuqOBSTsyu4/DqF95E="}, {"s": "CWovihTjtw/7i/fchD+9NQ==", "iv": "4Oj2k9RTwXWqu+dC", "k": "d8C6ZKYxrl/JZCtlirwUuf8tso04a2HccYn4aHC4rKVJg+P/adKUXvGSget2jJ3l8jUcfJUoGf4="}, {"s": "TyutXHelD4Ruuja0VRGV1g==", "iv": "PPNF2F9oz/ZcfHzF", "k": "XHl8EoY/snVbeqIbp0SmHZlDXrymJ6JhK4tbPdHf/EQes5X7EAJ5C+IKPZ0YUtVSeRTZSDgqSDQ="}, {"s": "GcVdkdCeLvm7Eyukboft5A==", "iv": "uBar5c97A0PmPkfW", "k": "gVyCXu0hZpZiZRqhpY/bGnNvPulOzH2Csqtd7NYV+3w99xuwKlX7DDiYRN0MzHZvukiuAu4woIQ="}, {"s": "CYDvcS0bxbA326UofoqrPw==", "iv": "mpTdPkyy89fRXBJs", "k": "hcGOGaTrA+ZEs+fIRzT9w2dFKXefhIRXsf4uI/sk16uItAqXlTkGurR4J+4Sg0dJt542B8YhVfE="}, {"s": "pvCq+j/uneycZo95vi0gig==", "iv": "k9rMKuZuLGC9V6B6", "k": "jXT6DG45QL6gCBcEu8wpi+MhTLh/lvU5fRR/Q93OGPZ6wM4pOxERPo8jdpG7+krWgtAyz1kkAO0="}, {"s": "t02eRs2SX2E2fHQrAQvZgw==", "iv": "5+EzEEY2CseRKDFo", "k": "L3I4SD+IlFFi+t9wm50G+NV5KDwc8sQYWhs9QHr8zA4/Ysm7SXpv+UrwNINXbrvXAqTfAIufk3Q="}, {"s": "oHJwXv/UfsTHu9/YJLiHTA==", "iv": "g4Qyo8pmFllyR+dU", "k": "R67wS00X+7q/IWax8XC1gm9vEi7enStbgooYlkr9tkArLcVSY1C5AwPbl6rKArl6KtJ00U/uT2U="}, {"s": "QlThDKvrE3pQFr3/U2qvsA==", "iv": "B5PJGvz4oHobmStI", "k": "aKy2Mj05TMrMPPUnX1hXO4lI468Jg/q6EQPEpICf7LBJcmSZuU8dpeaZB7nuUeyq0Bo2+p5C1XY="}, {"s": "O6ZEpK7F8Ua4aSq6pKO+9w==", "iv": "u1A50gzFAd+MlpCU", "k": "l3qjseRvPlwqDKgPgbivGYyaoCrBJCvOVoj1/WqsT8zFK8nEx6p16Em8Fuzd494fgEG9hoeUml0="}, {"s": "VokojOVVkzk5qCilpQB50Q==", "iv": "enxsLqYc4o229efT", "k": "wMGeo1Tn43jEC7tFCPODRYadBgXeMydsza/is3PQcurcVGOX4VUQHQvJLvZJ2XKNBsBArGGoIOQ="}, {"s": "xqlDn7wwffg/yiCWn+8C2g==", "iv": "QrGQPxD8u+MyncAt", "k": "pewyHxoKbr7DYxT8PFEr2399xT1nfA5ne401K9M/f5rzijNgOYhY7+AZmNoZPXBVqmQvAUdKsDg="}, {"s": "aqEgWoi1TaboMWXbcSL21Q==", "iv": "Tyxon5wa+ED4cbTY", "k": "azsMLlymJ5nm/SpuVTmp0XNgKvvfkirrDBwgaRh3aofM4050t1XG/LIi0Dih8uOPHIeOdIkLf0k="}, {"s": "0j2YYz0Ou3nVmdwf0ZWqfQ==", "iv": "KuDx91A4+WC4gz3E", "k": "VDMIsUfbw1BmdamygAP4yGkB+xKexlPic0Av4A4IJR8yR+QFuwjjs86hJrM4Vkku08GDYoW5Xqg="}]}, {"id": "alice-wonderland", "url": "alice/", "bg": "#e9d9ec", "fg": "#4a2559", "title": "Alice's Adventures in Wonderland", "author": "Lewis Carroll", "total": 38, "perDay": "每章分 3–4 天读", "published": 7, "iter": 150000, "keys": [{"s": "3sJID5QZxfRSg8lDFZUJeQ==", "iv": "z9bMEqazOr1o/9br", "k": "3qKRmmdQ5+eWxenmaElfCyX+g8Wtu2gIhmEvozrWhr1B1PDFlh87Jhd2rS9rYSCWylTEBA=="}]}], DEMO = null;
+const $ = id => document.getElementById(id);
+const LKEY = "er:code:library";
+function sget(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function sset(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function sdel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+const b64u8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function opens(book, code){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  const HK = "er:ks:" + book.id, hint = sget(HK);   // try last time's key first; the book page then opens fast too
+  const order = book.keys.filter(k => k.s === hint).concat(book.keys.filter(k => k.s !== hint));
+  for(const k of order){
+    try{
+      const kek = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64u8(k.s), iterations:book.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(k.iv)}, kek, b64u8(k.k));
+      sset(HK, k.s);
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
+async function unlock(code, silent){
+  code = (code || "").trim().toUpperCase().replace(/\s+/g, "");
+  if(!code) return;
+  $("msg").textContent = silent ? "" : "正在验证…"; $("unlock").disabled = true;
+  try{
+    const ok = [];
+    for(const b of BOOKS) if(await opens(b, code)) ok.push(b.id);
+    if(!ok.length){ $("msg").textContent = silent ? "" : "授权码不对，请检查后再试。"; return; }
+    sset(LKEY, code);
+    OWNER = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 12);
+    ok.forEach(id => sset("er:code:" + id, code));     // the book's own shelf then opens without asking again
+    show(ok);
+    checkName(code, ok);
+  }finally{ $("unlock").disabled = false; }
+}
+let OWNER = "";
+/* first login: ask the name right here (once per code). The name is saved into each book's progress on this phone;
+   the book page sends it to the cloud the first time it opens. If the cloud already has a name (new phone), use that. */
+const SYNC = "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec";
+async function sha(s){ return [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s.trim().toUpperCase().replace(/\s+/g, ""))))].map(b => b.toString(16).padStart(2, "0")).join(""); }
+function putName(ids, name){ ids.forEach(id => { const p = prog(id); if(!p.name){ p.name = name; p.days = p.days || {}; p.words = p.words || {}; sset("er:" + id + ":" + OWNER, JSON.stringify(p)); } }); }
+async function checkName(code, ids){
+  if(ids.some(id => prog(id).name)){ const n = ids.map(id => prog(id).name).find(Boolean); putName(ids, n); return; }
+  let cloud = "";
+  if(SYNC.startsWith("http")){
+    await Promise.all(ids.map(async id => {
+      try{
+        const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 5000);
+        const t = await sha(id === "my-story-mbr" ? code : code + "|" + id);
+        const j = await fetch(SYNC + "?t=" + t + "&b=" + encodeURIComponent(id), {signal: ac.signal}).then(r => r.json()); clearTimeout(tm);
+        if(j && j.data && j.data.name && !cloud) cloud = j.data.name;
+      }catch(e){}
+    }));
+  }
+  if(cloud){ putName(ids, cloud); show(ids); return; }
+  const box = $("nameAsk"), inp = $("nameIn"), ok = $("nameOk");
+  box.hidden = false; box.style.display = "flex";
+  inp.oninput = () => { ok.disabled = !inp.value.trim(); };
+  const go = () => { const v = inp.value.trim().slice(0, 30); if(!v) return; putName(ids, v); box.hidden = true; box.style.display = "none"; show(ids); };
+  ok.onclick = go; inp.onkeydown = e => { if(e.key === "Enter") go(); };
+  setTimeout(() => inp.focus(), 50);
+}
+function prog(id){ try{ return JSON.parse(sget("er:" + id + ":" + OWNER) || "{}") || {}; }catch(e){ return {}; } }   // progress is stored per code
+function show(ok){
+  $("lock").hidden = true; $("lib").hidden = false;
+  const name = BOOKS.map(b => prog(b.id).name).find(Boolean);
+  $("hello").textContent = name ? name + "，欢迎回来 👋" : "欢迎来到图书馆 👋";
+  $("libLede").textContent = "你可以读 " + ok.length + " 本书。点开一本，继续今天的阅读。";
+  if(DEMO){ $("demoNote").hidden = false; $("demoNote").textContent = DEMO; }
+  const g = $("grid"); g.innerHTML = "";
+  BOOKS.forEach(b => {
+    const can = ok.includes(b.id), p = prog(b.id), days = p.days || {};
+    const done = Object.values(days).filter(d => d && d.done).length;
+    const el = document.createElement(can ? "a" : "div");
+    el.className = "book" + (can ? "" : " locked");
+    if(can) el.href = b.url;
+    const tag = !can ? '<span class="tag off">未开通</span>' : done ? '<span class="tag go">继续阅读 →</span>' : '<span class="tag new">开始阅读 →</span>';
+    el.innerHTML = `
+      <div class="cover" style="background:${b.bg};color:${b.fg}">
+        <div><div class="t">${b.title}</div><div class="rule"></div><div class="a">${b.author}</div></div>
+        <div class="a">${b.total} 天 · ${b.perDay || "每天一章"}</div>
+        <span class="jc">JOURNEY</span>
+        ${can ? "" : '<div class="lockico">🔒</div>'}
+      </div>
+      <div class="meta">
+        <b>${b.title}</b>
+        <p class="note">${can ? "已完成 " + done + " / " + b.total + " 天 · 已更新到 Day " + b.published : "需要授权码才能打开，请联系发书人"}</p>
+        ${can ? `<div class="bar"><i style="width:${100 * done / b.total}%"></i></div>` : ""}
+        ${tag}
+      </div>`;
+    g.appendChild(el);
+  });
+}
+$("unlock").onclick = () => unlock($("code").value);
+$("code").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("code").value); });
+$("logout").onclick = () => { sdel(LKEY); BOOKS.forEach(b => sdel("er:code:" + b.id)); location.reload(); };
+const saved = sget(LKEY) || BOOKS.map(b => sget("er:code:" + b.id)).find(Boolean) || sget("er:code:my-story-mbr"); if(saved){ $("code").value = saved; unlock(saved, true); }
+</script>
+</body>
+</html>

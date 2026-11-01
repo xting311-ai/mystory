@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>英文原书图书馆</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<style>
+:root{
+  --bg:#f5f6f8; --paper:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
+  --accent:#2747b8; --accent-soft:#e6ebfb; --ok:#1f7a4d; --ok-soft:#e3f4ea;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Songti SC","STSong",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161f; --paper:#1a2030; --ink:#e7eaf2; --muted:#9aa3b6; --line:#2c3447;
+  --accent:#8aa2ff; --accent-soft:#232c4a; --ok:#6fd39f; --ok-soft:#173326; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding:0 16px}
+.wrap{max-width:860px;margin:0 auto;padding-block:28px 80px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0}
+h1{font-size:clamp(28px,6vw,40px)}
+p{margin:0}
+[hidden]{display:none!important}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lede{color:var(--muted);margin-top:8px}
+.note{font-size:14px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:16px}
+.btn{font:600 15px var(--body);background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:9px 16px;cursor:pointer;min-height:40px}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{font-size:13px;padding:5px 10px;min-height:32px}
+#lock{min-height:80vh;display:flex;align-items:center}
+#lock .panel{width:100%;max-width:440px;margin:0 auto;padding:28px}
+#code{width:100%;font:600 20px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:22px}
+.book{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+a.book:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,30,60,.12)}
+.cover{aspect-ratio:3/4;padding:16px 14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.cover .t{font-family:var(--display);font-size:clamp(17px,4.6vw,23px);line-height:1.15;font-weight:600}
+.cover .a{font-size:12px;letter-spacing:.06em;opacity:.85}
+.cover .rule{width:44px;height:3px;border-radius:2px;background:currentColor;opacity:.7;margin:14px 0}
+.cover .lockico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px;background:rgba(20,24,34,.45)}
+.cover .jc{position:absolute;right:12px;top:12px;font:600 9px var(--body);letter-spacing:.22em;opacity:.45}
+.meta{padding:12px 12px 14px}
+.meta b{font-family:var(--display);font-size:15px;line-height:1.3;display:block}
+.bar{height:6px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tag{display:inline-block;font:600 12px var(--body);border-radius:999px;padding:2px 9px;margin-top:8px}
+.tag.go{background:var(--ok-soft);color:var(--ok)} .tag.new{background:var(--accent-soft);color:var(--accent)} .tag.off{background:var(--line);color:var(--muted)}
+.book.locked{opacity:.75;cursor:default}
+.demo{background:#fff3d6;color:#8a5a00;border-radius:8px;padding:8px 12px;font-size:14px;margin-top:14px}
+@media (prefers-color-scheme: dark){.demo{background:#3a2f12;color:#f3c66b}}
+/* Journey brand banner (library home) */
+.jhero{margin:0 -16px 26px;padding:34px 22px 30px;background:linear-gradient(135deg,#1f3b57 0%,#2c5378 60%,#3a6a8f 100%);color:#f6ead0;position:relative;overflow:hidden}
+.jhero:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;border:1px solid rgba(241,220,174,.25)}
+.jhero .t{font:600 44px/1 var(--display);letter-spacing:.01em}
+.jhero .s{margin-top:10px;font:500 16px var(--body);letter-spacing:.18em;color:#f1dcae}
+.jhero .r{width:46px;height:2px;background:#f1dcae;opacity:.7;margin:18px 0 14px}
+.jhero .d{font-size:14px;opacity:.85}
+#lib{padding-top:0}
+@media(min-width:900px){#lib{padding-top:28px}.jhero{margin:0 0 26px;border-radius:16px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="lock">
+  <div class="panel">
+    <p class="eyebrow">English Reading Club</p>
+    <h1 style="margin-top:6px">英文原书图书馆</h1>
+    <p class="lede">一起读英文原书 · 朗读 · 生词讲解 · 复习</p>
+    <label for="code" class="note" style="display:block;margin-top:18px">请输入授权码</label>
+    <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="例如 ABCD-1234">
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center"><button class="btn" id="unlock">进入图书馆</button><span class="note" id="msg" role="alert"></span></div>
+  </div>
+</div>
+
+<div class="wrap" id="lib" hidden>
+  <div class="jhero"><div class="t">Journey</div><div class="s">AI 人生成长社</div><div class="r"></div><div class="d">一起读英文原书，一点点成长</div></div>
+  <p class="eyebrow">English Reading Club · 英文原书图书馆</p>
+  <h1 style="margin-top:6px" id="hello">英文原书图书馆</h1>
+  <p class="lede" id="libLede"></p>
+  <p class="demo" id="demoNote" hidden></p>
+  <div class="grid" id="grid"></div>
+  <div style="margin-top:28px;display:flex;justify-content:flex-end"><button class="btn ghost small" id="logout">退出授权</button></div>
+</div>
+
+<div id="nameAsk" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:16px;z-index:50">
+  <div class="panel" style="width:100%;max-width:400px;margin:0">
+    <div style="font-size:40px;line-height:1">🎉</div>
+    <h3 style="margin-top:8px;font-size:20px">欢迎加入 Journey 共读！</h3>
+    <p style="margin-top:8px;line-height:1.7">太开心你来了！接下来我们每天读一点，<b>听原声、学生词、一起复习</b>，一点点把整本英文原书读完 📖✨</p>
+    <p class="note" style="margin-top:6px">先告诉我们怎么称呼你吧～（只有发书的人能看到）</p>
+    <input id="nameIn" maxlength="30" autocomplete="name" placeholder="你的名字或昵称" style="width:100%;font:600 18px var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin-top:12px">
+    <div style="margin-top:12px"><button class="btn" id="nameOk" disabled>开始我的阅读之旅 →</button></div>
+  </div>
+</div>
+<script>
+const BOOKS = [{"id": "my-story-20d", "url": "my-story/", "bg": "#1f3b57", "fg": "#f1dcae", "title": "My Story", "author": "Mohammed bin Rashid Al Maktoum", "total": 20, "perDay": "4 周精读 · 每天 2–3 章精华", "published": 20, "iter": 150000, "keys": [{"s": "G7+tWtUw76RIcpZ9qxOz6w==", "iv": "ixXkuVEEAW5cdQTe", "k": "mPK3Q6Vkh6hz6t9PzmYlVNTakUEPaNpEMEwo0n6KgfCfl+FWvg8TKFqUI86bfh8in80qEw=="}, {"s": "dXbTl17UE4v3aZsgoim4wA==", "iv": "+ezCGFx9af3m1U3Q", "k": "nQ5Si/AkJLiEsMsLazqjgocmyqPmbKADCzW8sLpVRBeb49mGpDrC3SkK510TMnRcjcZlEQqbNCQ="}, {"s": "VFjlgFdW79XcL8xkdk3ySA==", "iv": "Lb0lC6GGUGBTPVaL", "k": "BXOxDLbn9u7Jfujk0tfs7DslHwo9fCQZCsINiySFG6NU5eehu9FAIpGENUffpf3vBwZXJuZbTFg="}, {"s": "nCnw65mYO641UYpfdoFXoA==", "iv": "WQFQsilBG8b5SwZy", "k": "06uPExrxFYn7JytNuQiRJy1ToRITK7Ir2pPe5MW7VMNWayxl96+WjcwJ0ufAcIqzdwadjTkiXQg="}, {"s": "0eqSQ9p3S05psHjw7eSzOA==", "iv": "xWFImm201YVbVbTF", "k": "8Hm8XI48U0dtBA+X65Bqp1rFeu56Wn7V6Ac9yIpjzYEreF3d42PWWj/i60PS5drBJToaTmfgFzI="}, {"s": "RXnEcxc8wiU45bYcnqE+vg==", "iv": "/XdlLR0+hWS2ISpi", "k": "T33DxwwlENi1qIzwwU9gR0T/n5HHFmeu1ZYbksa7f8GJT+yTDiGSatsn/zILeMSeT3BwBtqUr6s="}, {"s": "COE8rZDhHUerikUVNUV+8w==", "iv": "8CkjFF8M6zdZVBWR", "k": "2YwtkK3h0ty1iUgoL7KfWr4q6n4IJpLT054S8vB0wejD1Tkfp/boguaOgUA8dHAL1hBI/soOxWU="}, {"s": "66A3SWfd5R84A1amFkayRQ==", "iv": "VzvWURXA56/cUEzv", "k": "8quldp82XfgvHIkbA2IemGRJWz51rz3CnXifQ1FUsWnzSzAPMJhPOSEbO7KjgeIC80kPHSzWXWA="}, {"s": "S6zUfcyF82RMChPAiEtA8A==", "iv": "q+9TLBTraGfoxUEq", "k": "pCRyMUPE3ihPXkQD3T9psedSZ7v80XThtT0IxbC0crN4l7g2ETJCBMXmasXMB9QxH7n2OQ633fo="}, {"s": "UBJjnVOWuh4wT5u28G3Csg==", "iv": "0xgeCr59CIMKIFoX", "k": "EQl8uSFT2GpSSfDyME/hXA7SzWH22CmSmmLixcTJrhsDJpxypXKoq6esOm79NWEUxZgD1EJUl/E="}, {"s": "VHMRTgKEPvuGHhK0nTgQBw==", "iv": "ZCgX+j1TVQ0AAySt", "k": "stu/ccQI1OFh4RA02g4dms9Sd5xxl/menq2FntSXF7M3wxtaFkkRmwLHkKBsXQPqUk8QfUaXkQPL"}, {"s": "SK7VrcLKEdvokO2wZq4aNQ==", "iv": "Nxdj+ADGU1Szhofe", "k": "wqmfQtoneoyDm9DCszikAcbj7pSXn3H2VbIyzgHe33ngqKp9Qi2PVr2jr2e8f5I2k6mbd67M7s8="}, {"s": "hRc24RQdXJVQpeOpXCTx6g==", "iv": "FU6UaBDMB5Vl2yns", "k": "Z0qElcBU11ntdXVE+rK80zn0TiSuTlQgUnM50CpEElpcy3N5BVCFuwBEXtXgPloDNlhy0cvmIoQ="}, {"s": "SwQxPehhKCF2x1dWz90gOg==", "iv": "fW+AP+r6NJDoZa15", "k": "3lBTCv/LcWKqoYOsiJqNDmKV2GgJiK26JYmTvzpYIftP9dCMCvMVxKFMfsVqdcu2giypF6WzP6M="}, {"s": "q9DrP4EJ3lJqiiaY4ZvKaA==", "iv": "PoRY/t+NZx/Kwtd9", "k": "Z7bu2TVlaRltQrqIlSbmStYg74ChWX+vafTR2FmnFEXIz7QpDRmR30fRZyGwENTXlwRbm6gfUMo="}, {"s": "4RihfYI9DGOhulWNciiiuA==", "iv": "VGqSRlBiEAt5jDVo", "k": "Rji8P6/1THazcp7239sMIYWIpAkeZjra7iAi+5eVMoObyYyar6lkO+QMoKCyvaFxb4AjGgiR2W8="}, {"s": "eg58a+zMCzbPH2zr+G0KOA==", "iv": "haqNjQq/qog6B2Aa", "k": "AhaWyc5bi4Wkn0dbScUPP4UhcMyovDYWnhve6Khpakw4Eki0vClmgocSHfn6l3iETFhgXmDNxU4="}, {"s": "4hhzgoh9kSHRxKikel01Sw==", "iv": "7a1UrEcyHxnmvpt7", "k": "t8+MiDUASa7NpewJAL1VmuOgs0x0rebaxZR2eWbOiUb88crEQcMqr6lpWJuoYFaYLQX8fQTeEIA="}, {"s": "6jE4o8QdETSCtyBK7Xv2DQ==", "iv": "nQJuUvPfRYiPsgJS", "k": "QawyMZk7aA1BatKK3a9VQ1q4MQmHW4Tq3HaBee0bs9tEyDFyI1r3gdxofy2+SBDp7l4CWZT+B4k="}, {"s": "PnF3EywDX7hpos3NkDYYXQ==", "iv": "d65PmN7jHzV7bpWl", "k": "iq4LUWGiyh0GGy0OabQtPoPywFsZtfx5hIDzlKXdmK1m0pHpcpZ79UrTvE46tAVdA1/JccN2I2Q="}, {"s": "XuggrT/knyNgpP8sCtSb8g==", "iv": "rEgXheQ1Bw+JK0o1", "k": "sxHNKFLwoYAHEdhKiJJmrd9a6mXjnLFw1RyLxVvBkIDlg73d72BSP+lx/h1atK7MXam94eM+w3c="}, {"s": "Pb3Fl4xsj2jbUccqjBriJg==", "iv": "uN+zuMsrZafMBLMF", "k": "70j8MgHtJfym7bmTwUKY7D16NrhgJEjFBM1VvgHBM73Jn7UFB49IJq3qQ0izWxmNNf+XZpJv6Rc="}, {"s": "QGBXor/xCGHed1vjshLWLg==", "iv": "zIC7j/XREUo0Iiaq", "k": "tG33rabywLanbshHTA5EEu/u/M8ckcbZc5PdDA8Yql9DiBrNwGHWr75ke4ldPsO3aP4nACtkTpM="}, {"s": "tOJd80DkpvwZE80aDQWwOQ==", "iv": "v4Ojqm8X8qTLafAp", "k": "upAJdGc/fptp9d5Lqo0hPPdIuo4wk6G+FehExKfhEVLDLIiM3GfwrQEVoatqW9EozjXwkWet63Y="}, {"s": "D+lrPjNnoaxRPsEuZU0zMA==", "iv": "EnRLXSQgNX9EKL3/", "k": "LvhNzhvzdKAULnBQxzynoj6zQ673BMnwij+HHh2imJaGjFctef+dj/0eYF9wqt+sWQBq3md/xjI="}, {"s": "J6tf8epzqYMgQEZtqiQ/eA==", "iv": "aACiADVW8Gx4Ymtz", "k": "uUNZZok0j6UpzzSo843BOcfBOvtfXg0tUlRAjMIT3PVKBRsVKKJAaZLyZAYz+wntvKqHPOCgIEw="}, {"s": "fcavezun8BwkMX9st98ARg==", "iv": "YmYSRdr+mue3ZAq7", "k": "ynAaXhvwKl5/I+XzqfPNjcADzCpcdyZ9Cr+/hxvsdbEnyrDsCt7nY60yUh3hzr43TiyhgywE3/0="}, {"s": "tc6M56a3L0BBJdjrEwE2Pg==", "iv": "m0tn8GO/tdR1Q7aM", "k": "vddpH4LbMx7craO8qyo/NS/r0vLD4dsJSl13SLNoEHC4s9+KHj14C1bKX3403fDUnINhFAQTvIY="}, {"s": "NAMe56lRUpt2EWBf+gxveg==", "iv": "G+4JvSMRoWgTx1Dd", "k": "8ehumlEcHE85M1fnPHLcgySB+PDUV00QEFGWuJ5VqMAyrBVkX75QHdqRuhd7queTFmFuVm/z5GM="}, {"s": "AI4L1xA3q5ke4Eon+QZCHQ==", "iv": "iqMWl0cRDUuGCle2", "k": "xigw2OaBBMbxRri/WxT7hrXY7YKnMVK1UgevSy0LKx12TX3BZCpu/tDySLpy1SNthiicwf5NvRU="}, {"s": "uk/GFvHOkNAXy6KnwXo8FA==", "iv": "M7I+Mlj4hM8XMyEb", "k": "QXGpmAt5Ea5OST8CWTCtIIvNgz6wuh1uFNhwJgz83oZOj0gq4qmM/98iBwTlTpxAR+AT4lsAbUc="}, {"s": "zGqvjk0jUNisMRaJEaD7yw==", "iv": "yu9BxhFKNe051IZe", "k": "DVLo/J3gOHgT/pt/LbgEZvXWPinPmXeGXpvJMkr6W8niZCr0s6fe8mklioLZxV8oFVDhjoUzvpE="}]}, {"id": "alice-wonderland", "url": "alice/", "bg": "#e9d9ec", "fg": "#4a2559", "title": "Alice's Adventures in Wonderland", "author": "Lewis Carroll", "total": 38, "perDay": "每章分 3–4 天读", "published": 38, "iter": 150000, "keys": [{"s": "tQ87hd2C5/r4xm+/pcUqYw==", "iv": "NRJH5NEyFS6TICpe", "k": "tNjb+j7r1OORtStATwQmsgnVP9KQkbkNwMD0hKZomr1Nz76naAfWOZ1bwjYy0amzYdJgfw=="}, {"s": "I/8sPUMm9hMoQNv9n0I3tA==", "iv": "fHmALUQo/euPGSut", "k": "KKJmia7Au33QXXbGyGRBM6alwtgql7htNlLSRtUnqekKdLq94RFXehAh6HGwsLTyJNdax/RyDkJF"}]}], DEMO = null;
+const $ = id => document.getElementById(id);
+const LKEY = "er:code:library";
+function sget(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function sset(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function sdel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+const b64u8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function opens(book, code){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  const HK = "er:ks:" + book.id, hint = sget(HK);   // try last time's key first; the book page then opens fast too
+  const order = book.keys.filter(k => k.s === hint).concat(book.keys.filter(k => k.s !== hint));
+  for(const k of order){
+    try{
+      const kek = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64u8(k.s), iterations:book.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(k.iv)}, kek, b64u8(k.k));
+      sset(HK, k.s);
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
+async function unlock(code, silent){
+  code = (code || "").trim().toUpperCase().replace(/\s+/g, "");
+  if(!code) return;
+  $("msg").textContent = silent ? "" : "正在验证…"; $("unlock").disabled = true;
+  try{
+    const ok = [];
+    for(const b of BOOKS) if(await opens(b, code)) ok.push(b.id);
+    if(!ok.length){ $("msg").textContent = silent ? "" : "授权码不对，请检查后再试。"; return; }
+    sset(LKEY, code);
+    OWNER = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 12);
+    ok.forEach(id => sset("er:code:" + id, code));     // the book's own shelf then opens without asking again
+    show(ok);
+    checkName(code, ok);
+  }finally{ $("unlock").disabled = false; }
+}
+let OWNER = "";
+/* first login: ask the name right here (once per code). The name is saved into each book's progress on this phone;
+   the book page sends it to the cloud the first time it opens. If the cloud already has a name (new phone), use that. */
+const SYNC = "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec";
+async function sha(s){ return [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s.trim().toUpperCase().replace(/\s+/g, ""))))].map(b => b.toString(16).padStart(2, "0")).join(""); }
+function putName(ids, name){ ids.forEach(id => { const p = prog(id); if(!p.name){ p.name = name; p.days = p.days || {}; p.words = p.words || {}; sset("er:" + id + ":" + OWNER, JSON.stringify(p)); } }); }
+async function checkName(code, ids){
+  if(ids.some(id => prog(id).name)){ const n = ids.map(id => prog(id).name).find(Boolean); putName(ids, n); return; }
+  let cloud = "";
+  if(SYNC.startsWith("http")){
+    await Promise.all(ids.map(async id => {
+      try{
+        const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 5000);
+        const t = await sha(id === "my-story-mbr" ? code : code + "|" + id);
+        const j = await fetch(SYNC + "?t=" + t + "&b=" + encodeURIComponent(id), {signal: ac.signal}).then(r => r.json()); clearTimeout(tm);
+        if(j && j.data && j.data.name && !cloud) cloud = j.data.name;
+      }catch(e){}
+    }));
+  }
+  if(cloud){ putName(ids, cloud); show(ids); return; }
+  const box = $("nameAsk"), inp = $("nameIn"), ok = $("nameOk");
+  box.hidden = false; box.style.display = "flex";
+  inp.oninput = () => { ok.disabled = !inp.value.trim(); };
+  const go = () => { const v = inp.value.trim().slice(0, 30); if(!v) return; putName(ids, v); box.hidden = true; box.style.display = "none"; show(ids); };
+  ok.onclick = go; inp.onkeydown = e => { if(e.key === "Enter") go(); };
+  setTimeout(() => inp.focus(), 50);
+}
+function prog(id){ try{ return JSON.parse(sget("er:" + id + ":" + OWNER) || "{}") || {}; }catch(e){ return {}; } }   // progress is stored per code
+function show(ok){
+  $("lock").hidden = true; $("lib").hidden = false;
+  const name = BOOKS.map(b => prog(b.id).name).find(Boolean);
+  $("hello").textContent = name ? name + "，欢迎回来 👋" : "欢迎来到图书馆 👋";
+  $("libLede").textContent = "你可以读 " + ok.length + " 本书。点开一本，继续今天的阅读。";
+  if(DEMO){ $("demoNote").hidden = false; $("demoNote").textContent = DEMO; }
+  const g = $("grid"); g.innerHTML = "";
+  BOOKS.forEach(b => {
+    const can = ok.includes(b.id), p = prog(b.id), days = p.days || {};
+    const done = Object.values(days).filter(d => d && d.done).length;
+    const el = document.createElement(can ? "a" : "div");
+    el.className = "book" + (can ? "" : " locked");
+    if(can) el.href = b.url;
+    const tag = !can ? '<span class="tag off">未开通</span>' : done ? '<span class="tag go">继续阅读 →</span>' : '<span class="tag new">开始阅读 →</span>';
+    el.innerHTML = `
+      <div class="cover" style="background:${b.bg};color:${b.fg}">
+        <div><div class="t">${b.title}</div><div class="rule"></div><div class="a">${b.author}</div></div>
+        <div class="a">${b.total} 天 · ${b.perDay || "每天一章"}</div>
+        <span class="jc">JOURNEY</span>
+        ${can ? "" : '<div class="lockico">🔒</div>'}
+      </div>
+      <div class="meta">
+        <b>${b.title}</b>
+        <p class="note">${can ? "已完成 " + done + " / " + b.total + " 天 · 已更新到 Day " + b.published : "需要授权码才能打开，请联系发书人"}</p>
+        ${can ? `<div class="bar"><i style="width:${100 * done / b.total}%"></i></div>` : ""}
+        ${tag}
+      </div>`;
+    g.appendChild(el);
+  });
+}
+$("unlock").onclick = () => unlock($("code").value);
+$("code").addEventListener("keydown", e => { if(e.key === "Enter") unlock($("code").value); });
+$("logout").onclick = () => { sdel(LKEY); BOOKS.forEach(b => sdel("er:code:" + b.id)); location.reload(); };
+const saved = sget(LKEY) || BOOKS.map(b => sget("er:code:" + b.id)).find(Boolean) || sget("er:code:my-story-mbr"); if(saved){ $("code").value = saved; unlock(saved, true); }
+</script>
+</body>
+</html>

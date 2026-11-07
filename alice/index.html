@@ -368,10 +368,22 @@ async function tryCode(code){
   }
   return null;
 }
-async function loadDayData(n){
-  const r = await fetch("d/day" + String(n).padStart(2,"0") + ".txt", {cache:"no-cache"});
-  if(!r.ok) throw new Error("下载失败（" + r.status + "）");
-  const [iv, ct] = (await r.text()).trim().split(".");
+async function loadDayData(n, quiet){
+  const ac = new AbortController(); let tm = setTimeout(() => ac.abort(), 60000);   // never hang forever
+  let r;
+  try{ r = await fetch("d/day" + String(n).padStart(2,"0") + ".txt", {cache:"no-cache", signal: ac.signal}); }
+  catch(e){ clearTimeout(tm); throw new Error(e.name === "AbortError" ? "网络太慢，下载超时" : "网络连接失败"); }
+  if(!r.ok){ clearTimeout(tm); throw new Error("下载失败（" + r.status + "）"); }
+  let txt;
+  const total = +r.headers.get("content-length") || 0;
+  if(!quiet && total && r.body && r.body.getReader){   // show download progress so a slow connection is visible
+    const rd = r.body.getReader(), parts = []; let got = 0;
+    try{ for(;;){ const {done, value} = await rd.read(); if(done) break; parts.push(value); got += value.length; toast("正在打开 Day " + n + "… " + Math.min(99, Math.round(got * 100 / total)) + "%"); } }
+    catch(e){ clearTimeout(tm); throw new Error(e.name === "AbortError" ? "网络太慢，下载超时" : "下载中断"); }
+    const all = new Uint8Array(got); let o = 0; parts.forEach(p => { all.set(p, o); o += p.length; }); txt = new TextDecoder().decode(all);
+  } else txt = await r.text();
+  clearTimeout(tm);
+  const [iv, ct] = txt.trim().split(".");
   const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(iv)}, KEY, b64u8(ct));
   return JSON.parse(new TextDecoder().decode(pt));
 }
@@ -781,7 +793,7 @@ function fillClozes(list){   // words saved before sentences were added: take th
   if(!need || clozeBusy) return;
   clozeBusy = true;
   Promise.all(list.filter(r => typeof r.cl !== "string").map(async r => {
-    try{ if(!r.day || !META.days.some(d => d.n === r.day)) throw 0; if(!dayCache[r.day]) dayCache[r.day] = loadDayData(r.day); const d = await dayCache[r.day]; r.cl = makeCloze(d.vocab.find(v => v.w === r.w), d.forms); }
+    try{ if(!r.day || !META.days.some(d => d.n === r.day)) throw 0; if(!dayCache[r.day]) dayCache[r.day] = loadDayData(r.day, true); const d = await dayCache[r.day]; r.cl = makeCloze(d.vocab.find(v => v.w === r.w), d.forms); }
     catch(e){ r.cl = ""; }
   })).then(() => { clozeBusy = false; saveProg(); if(!$("app").hidden) renderReview(); });
 }

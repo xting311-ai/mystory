@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Alice's Adventures in Wonderland</title><link rel="manifest" href="/mystory/manifest.webmanifest"><meta name="theme-color" content="#1f3b57"><link rel="apple-touch-icon" href="/mystory/icons/apple-touch-icon.png"><link rel="icon" href="/mystory/icons/icon-192.png"><meta name="apple-mobile-web-app-title" content="原书共读">
+<title>Alice's Adventures in Wonderland</title>
 <style>
 :root{
   --bg:#f5f6f8; --paper:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#dde1e8;
@@ -169,6 +169,39 @@ pre.out{white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1p
 #app.noaudio #play,#app.noaudio #stop,#app.noaudio #tm,#app.noaudio #bar,#app.noaudio #speedRow,#app.noaudio #showTxt,#app.noaudio #textOff{display:none!important}
 #app.noaudio #textWrap.off #text{display:block!important;filter:none!important;visibility:visible!important}
 .soon{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:14px;margin-top:12px}
+/* KIDMODE: bright, big, round — only when META.kids */
+body.kids{--bg:#fff8ec;--paper:#fff;--ink:#3a2c1c;--muted:#8a7660;--line:#f0e2c8;--body:"Nunito","Arial Rounded MT Bold","PingFang SC","Noto Sans SC",system-ui,sans-serif;--display:var(--body);--read:"Nunito","Arial Rounded MT Bold",Arial,"PingFang SC",sans-serif;font-size:18px;color-scheme:light}
+body.kids .jband{border-radius:0 0 28px 28px;background:linear-gradient(160deg,color-mix(in srgb,var(--main) 70%,#fff),var(--main));color:#fff}
+@media(min-width:812px){body.kids .jband{border-radius:28px}}
+body.kids .jband h1,body.kids .jband .lede,body.kids .jband .eyebrow{color:#fff}
+body.kids .jband h1{font-weight:900}
+body.kids .jband .lede{font-size:17px;opacity:.95}
+body.kids .kemo{font-size:54px;line-height:1;float:right;margin-top:6px}
+body.kids .btn{border-radius:999px;font-weight:800;font-size:17px;min-height:46px;padding:10px 22px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+body.kids .btn.ghost{box-shadow:none}
+body.kids .panel,body.kids .card,body.kids .step,body.kids .drill{border-radius:22px}
+body.kids .steps a{border-radius:999px;font-weight:800;font-size:17px}
+body.kids .step-head h2{font-weight:900}
+body.kids #text{font-size:24px;line-height:1.8}
+body.kids .card .w{font-size:28px;font-weight:900}
+body.kids .card .emo{font-size:44px;line-height:1;margin-right:10px;vertical-align:middle}
+body.kids .drill .q{font-size:22px;font-weight:800}
+body.kids .drill .q .emo{font-size:30px;margin-right:6px}
+body.kids .drill input{font-size:22px}
+.kgrp{font:900 20px var(--body);margin:22px 0 10px;color:var(--accent)}
+.kdays{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.kday{font:inherit;color:var(--ink);background:var(--paper);border-radius:22px;padding:14px 8px;text-align:center;border:3px solid var(--line);box-shadow:0 5px 0 var(--line);cursor:pointer}
+.kday .n{font-size:24px;font-weight:900;display:block}
+.kday .s{font-size:24px;display:block;margin-top:2px;min-height:32px}
+.kday small{display:block;color:var(--muted);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kday.done{border-color:#ffc93c;box-shadow:0 5px 0 #f2b41d}
+.kday.now{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.04)}
+.kday.now small{color:#fff;opacity:.9}
+.kday:disabled{opacity:.5;cursor:default}
+.kstars{display:inline-block;background:#fff;color:#3a2c1c;border-radius:999px;padding:4px 14px;font-weight:900;margin-top:8px}
+.kcheer{background:#ffc93c;color:#3a2c1c;border-radius:24px;padding:20px;text-align:center;font-size:26px;font-weight:900;box-shadow:0 6px 0 #f2b41d}
+.kcheer small{display:block;font-size:17px;font-weight:700;margin-top:6px}
+.kcheer .btn{margin-top:12px}
 </style>
 </head>
 <body>
@@ -313,7 +346,7 @@ pre.out{white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1p
   <div class="chips" id="popChips"></div>
 </div>
 
-<script id="meta" type="application/json">{"bookId": "alice-wonderland", "book": "Alice's Adventures in Wonderland", "author": "Lewis Carroll", "total": 38, "libraryUrl": "../", "perDay": "每章分 3–4 天读", "syncUrl": "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec", "segmentsPerDay": 2, "theme": {"main": "#4a2559", "gold": "#e9d9ec", "soft": "#eee1f1", "line": "#e2d4e6"}, "iter": 150000, "keys": [{"s": "tQ87hd2C5/r4xm+/pcUqYw==", "iv": "NRJH5NEyFS6TICpe", "k": "tNjb+j7r1OORtStATwQmsgnVP9KQkbkNwMD0hKZomr1Nz76naAfWOZ1bwjYy0amzYdJgfw=="}, {"s": "I/8sPUMm9hMoQNv9n0I3tA==", "iv": "fHmALUQo/euPGSut", "k": "KKJmia7Au33QXXbGyGRBM6alwtgql7htNlLSRtUnqekKdLq94RFXehAh6HGwsLTyJNdax/RyDkJF"}], "days": [{"n": 1, "ch": 1, "part": 1, "parts": 3, "title": "Down the Rabbit-Hole", "words": 758}, {"n": 2, "ch": 1, "part": 2, "parts": 3, "title": "Down the Rabbit-Hole", "words": 682}, {"n": 3, "ch": 1, "part": 3, "parts": 3, "title": "Down the Rabbit-Hole", "words": 700}, {"n": 4, "ch": 2, "part": 1, "parts": 3, "title": "The Pool of Tears", "words": 772}, {"n": 5, "ch": 2, "part": 2, "parts": 3, "title": "The Pool of Tears", "words": 630}, {"n": 6, "ch": 2, "part": 3, "parts": 3, "title": "The Pool of Tears", "words": 691}, {"n": 7, "ch": 3, "part": 1, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 580}, {"n": 8, "ch": 3, "part": 2, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 566}, {"n": 9, "ch": 3, "part": 3, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 548}, {"n": 10, "ch": 4, "part": 1, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 687}, {"n": 11, "ch": 4, "part": 2, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 667}, {"n": 12, "ch": 4, "part": 3, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 637}, {"n": 13, "ch": 4, "part": 4, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 615}, {"n": 14, "ch": 5, "part": 1, "parts": 3, "title": "Advice from a Caterpillar", "words": 718}, {"n": 15, "ch": 5, "part": 2, "parts": 3, "title": "Advice from a Caterpillar", "words": 742}, {"n": 16, "ch": 5, "part": 3, "parts": 3, "title": "Advice from a Caterpillar", "words": 700}, {"n": 17, "ch": 6, "part": 1, "parts": 4, "title": "Pig and Pepper", "words": 626}, {"n": 18, "ch": 6, "part": 2, "parts": 4, "title": "Pig and Pepper", "words": 675}, {"n": 19, "ch": 6, "part": 3, "parts": 4, "title": "Pig and Pepper", "words": 642}, {"n": 20, "ch": 6, "part": 4, "parts": 4, "title": "Pig and Pepper", "words": 645}, {"n": 21, "ch": 7, "part": 1, "parts": 3, "title": "A Mad Tea-Party", "words": 757}, {"n": 22, "ch": 7, "part": 2, "parts": 3, "title": "A Mad Tea-Party", "words": 765}, {"n": 23, "ch": 7, "part": 3, "parts": 3, "title": "A Mad Tea-Party", "words": 760}, {"n": 24, "ch": 8, "part": 1, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 837}, {"n": 25, "ch": 8, "part": 2, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 832}, {"n": 26, "ch": 8, "part": 3, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 813}, {"n": 27, "ch": 9, "part": 1, "parts": 3, "title": "The Mock Turtle's Story", "words": 753}, {"n": 28, "ch": 9, "part": 2, "parts": 3, "title": "The Mock Turtle's Story", "words": 766}, {"n": 29, "ch": 9, "part": 3, "parts": 3, "title": "The Mock Turtle's Story", "words": 747}, {"n": 30, "ch": 10, "part": 1, "parts": 3, "title": "The Lobster Quadrille", "words": 673}, {"n": 31, "ch": 10, "part": 2, "parts": 3, "title": "The Lobster Quadrille", "words": 667}, {"n": 32, "ch": 10, "part": 3, "parts": 3, "title": "The Lobster Quadrille", "words": 684}, {"n": 33, "ch": 11, "part": 1, "parts": 3, "title": "Who Stole the Tarts?", "words": 620}, {"n": 34, "ch": 11, "part": 2, "parts": 3, "title": "Who Stole the Tarts?", "words": 625}, {"n": 35, "ch": 11, "part": 3, "parts": 3, "title": "Who Stole the Tarts?", "words": 627}, {"n": 36, "ch": 12, "part": 1, "parts": 3, "title": "Alice's Evidence", "words": 702}, {"n": 37, "ch": 12, "part": 2, "parts": 3, "title": "Alice's Evidence", "words": 691}, {"n": 38, "ch": 12, "part": 3, "parts": 3, "title": "Alice's Evidence", "words": 708}]}</script>
+<script id="meta" type="application/json">{"bookId": "alice-wonderland", "book": "Alice's Adventures in Wonderland", "author": "Lewis Carroll", "total": 38, "libraryUrl": "../", "perDay": "每章分 3–4 天读", "syncUrl": "https://script.google.com/macros/s/AKfycbwDjpFXxa2ithrjWHhUEwECpTBN_FNGO3qA7asnyrwDOfX0IhWxXj7ZhjLdHtvVrqEj/exec", "segmentsPerDay": 2, "theme": {"main": "#4a2559", "gold": "#e9d9ec", "soft": "#eee1f1", "line": "#e2d4e6"}, "iter": 150000, "keys": [{"s": "tQ87hd2C5/r4xm+/pcUqYw==", "iv": "NRJH5NEyFS6TICpe", "k": "tNjb+j7r1OORtStATwQmsgnVP9KQkbkNwMD0hKZomr1Nz76naAfWOZ1bwjYy0amzYdJgfw=="}, {"s": "I/8sPUMm9hMoQNv9n0I3tA==", "iv": "fHmALUQo/euPGSut", "k": "KKJmia7Au33QXXbGyGRBM6alwtgql7htNlLSRtUnqekKdLq94RFXehAh6HGwsLTyJNdax/RyDkJF"}], "days": [{"n": 1, "ch": 1, "part": 1, "parts": 3, "title": "Down the Rabbit-Hole", "words": 758, "zh": "掉进兔子洞", "label": "第 1 章 · 1/3"}, {"n": 2, "ch": 1, "part": 2, "parts": 3, "title": "Down the Rabbit-Hole", "words": 682, "zh": "掉进兔子洞", "label": "第 1 章 · 2/3"}, {"n": 3, "ch": 1, "part": 3, "parts": 3, "title": "Down the Rabbit-Hole", "words": 700, "zh": "掉进兔子洞", "label": "第 1 章 · 3/3"}, {"n": 4, "ch": 2, "part": 1, "parts": 3, "title": "The Pool of Tears", "words": 772, "zh": "眼泪池塘", "label": "第 2 章 · 1/3"}, {"n": 5, "ch": 2, "part": 2, "parts": 3, "title": "The Pool of Tears", "words": 630, "zh": "眼泪池塘", "label": "第 2 章 · 2/3"}, {"n": 6, "ch": 2, "part": 3, "parts": 3, "title": "The Pool of Tears", "words": 691, "zh": "眼泪池塘", "label": "第 2 章 · 3/3"}, {"n": 7, "ch": 3, "part": 1, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 580, "zh": "团团转赛跑和长故事", "label": "第 3 章 · 1/3"}, {"n": 8, "ch": 3, "part": 2, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 566, "zh": "团团转赛跑和长故事", "label": "第 3 章 · 2/3"}, {"n": 9, "ch": 3, "part": 3, "parts": 3, "title": "A Caucus-Race and a Long Tale", "words": 548, "zh": "团团转赛跑和长故事", "label": "第 3 章 · 3/3"}, {"n": 10, "ch": 4, "part": 1, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 687, "zh": "兔子派来小比尔", "label": "第 4 章 · 1/4"}, {"n": 11, "ch": 4, "part": 2, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 667, "zh": "兔子派来小比尔", "label": "第 4 章 · 2/4"}, {"n": 12, "ch": 4, "part": 3, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 637, "zh": "兔子派来小比尔", "label": "第 4 章 · 3/4"}, {"n": 13, "ch": 4, "part": 4, "parts": 4, "title": "The Rabbit Sends in a Little Bill", "words": 615, "zh": "兔子派来小比尔", "label": "第 4 章 · 4/4"}, {"n": 14, "ch": 5, "part": 1, "parts": 3, "title": "Advice from a Caterpillar", "words": 718, "zh": "毛毛虫的建议", "label": "第 5 章 · 1/3"}, {"n": 15, "ch": 5, "part": 2, "parts": 3, "title": "Advice from a Caterpillar", "words": 742, "zh": "毛毛虫的建议", "label": "第 5 章 · 2/3"}, {"n": 16, "ch": 5, "part": 3, "parts": 3, "title": "Advice from a Caterpillar", "words": 700, "zh": "毛毛虫的建议", "label": "第 5 章 · 3/3"}, {"n": 17, "ch": 6, "part": 1, "parts": 4, "title": "Pig and Pepper", "words": 626, "zh": "小猪和胡椒", "label": "第 6 章 · 1/4"}, {"n": 18, "ch": 6, "part": 2, "parts": 4, "title": "Pig and Pepper", "words": 675, "zh": "小猪和胡椒", "label": "第 6 章 · 2/4"}, {"n": 19, "ch": 6, "part": 3, "parts": 4, "title": "Pig and Pepper", "words": 642, "zh": "小猪和胡椒", "label": "第 6 章 · 3/4"}, {"n": 20, "ch": 6, "part": 4, "parts": 4, "title": "Pig and Pepper", "words": 645, "zh": "小猪和胡椒", "label": "第 6 章 · 4/4"}, {"n": 21, "ch": 7, "part": 1, "parts": 3, "title": "A Mad Tea-Party", "words": 757, "zh": "疯狂的茶会", "label": "第 7 章 · 1/3"}, {"n": 22, "ch": 7, "part": 2, "parts": 3, "title": "A Mad Tea-Party", "words": 765, "zh": "疯狂的茶会", "label": "第 7 章 · 2/3"}, {"n": 23, "ch": 7, "part": 3, "parts": 3, "title": "A Mad Tea-Party", "words": 760, "zh": "疯狂的茶会", "label": "第 7 章 · 3/3"}, {"n": 24, "ch": 8, "part": 1, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 837, "zh": "王后的槌球场", "label": "第 8 章 · 1/3"}, {"n": 25, "ch": 8, "part": 2, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 832, "zh": "王后的槌球场", "label": "第 8 章 · 2/3"}, {"n": 26, "ch": 8, "part": 3, "parts": 3, "title": "The Queen's Croquet-Ground", "words": 813, "zh": "王后的槌球场", "label": "第 8 章 · 3/3"}, {"n": 27, "ch": 9, "part": 1, "parts": 3, "title": "The Mock Turtle's Story", "words": 753, "zh": "假海龟的故事", "label": "第 9 章 · 1/3"}, {"n": 28, "ch": 9, "part": 2, "parts": 3, "title": "The Mock Turtle's Story", "words": 766, "zh": "假海龟的故事", "label": "第 9 章 · 2/3"}, {"n": 29, "ch": 9, "part": 3, "parts": 3, "title": "The Mock Turtle's Story", "words": 747, "zh": "假海龟的故事", "label": "第 9 章 · 3/3"}, {"n": 30, "ch": 10, "part": 1, "parts": 3, "title": "The Lobster Quadrille", "words": 673, "zh": "龙虾方块舞", "label": "第 10 章 · 1/3"}, {"n": 31, "ch": 10, "part": 2, "parts": 3, "title": "The Lobster Quadrille", "words": 667, "zh": "龙虾方块舞", "label": "第 10 章 · 2/3"}, {"n": 32, "ch": 10, "part": 3, "parts": 3, "title": "The Lobster Quadrille", "words": 684, "zh": "龙虾方块舞", "label": "第 10 章 · 3/3"}, {"n": 33, "ch": 11, "part": 1, "parts": 3, "title": "Who Stole the Tarts?", "words": 620, "zh": "谁偷了馅饼", "label": "第 11 章 · 1/3"}, {"n": 34, "ch": 11, "part": 2, "parts": 3, "title": "Who Stole the Tarts?", "words": 625, "zh": "谁偷了馅饼", "label": "第 11 章 · 2/3"}, {"n": 35, "ch": 11, "part": 3, "parts": 3, "title": "Who Stole the Tarts?", "words": 627, "zh": "谁偷了馅饼", "label": "第 11 章 · 3/3"}, {"n": 36, "ch": 12, "part": 1, "parts": 3, "title": "Alice's Evidence", "words": 702, "zh": "爱丽丝的证词", "label": "第 12 章 · 1/3"}, {"n": 37, "ch": 12, "part": 2, "parts": 3, "title": "Alice's Evidence", "words": 691, "zh": "爱丽丝的证词", "label": "第 12 章 · 2/3"}, {"n": 38, "ch": 12, "part": 3, "parts": 3, "title": "Alice's Evidence", "words": 708, "zh": "爱丽丝的证词", "label": "第 12 章 · 3/3"}], "kidReader": "体验码", "emo": "🎩", "zh": "爱丽丝梦游仙境"}</script>
 <script>
 "use strict";
 const META = JSON.parse(document.getElementById("meta").textContent);
@@ -324,6 +357,32 @@ if(META.theme){   // the book's cover colours: header band always, buttons/accen
   st.textContent = ":root{--main:" + t.main + ";--gold:" + t.gold + "}@media not all and (prefers-color-scheme: dark){:root:not([data-theme=dark]){--accent:" + t.main + ";--accent-soft:" + t.soft + ";--line:" + t.line + "}}:root[data-theme=light]{--accent:" + t.main + ";--accent-soft:" + t.soft + ";--line:" + t.line + "}";
   document.head.appendChild(st);
 }
+let KIDS = false;   // KIDMODE: kids books always; other books for META.kidReader (the son's code)
+function applyKids(){
+  if(KIDS) return; KIDS = true;
+  document.body.classList.add("kids");
+  document.querySelectorAll(".jw").forEach(e => e.textContent = "📚 LITTLE READERS");
+  const nav = document.querySelectorAll("#steps a"); nav[0].textContent = "① 听故事"; nav[1].hidden = true; nav[2].textContent = "② 认单词"; nav[3].textContent = "③ 拼一拼";
+  $("s2").hidden = true;
+  const H = (id, n, t) => { $(id).querySelector(".step-head .n").textContent = n; $(id).querySelector(".step-head h2").textContent = t; };
+  H("s1", "①", "听故事"); H("s3", "②", "认单词"); H("s4", "③", "拼一拼");
+  $("readHint").textContent = "先点 ▶ 听一遍故事。再点“显示英文”，边听边看。哪句没听清，点那句就能再听。";
+  $("readDone").textContent = "听完了，去认单词 →";
+  $("s3").querySelector(".note").textContent = "今天的新单词都在这里。每个词点 🔊 听两遍，跟着读出来。";
+  $("cardsDone").textContent = "认完了，去拼一拼 →";
+  $("s4").querySelector(".note").textContent = "看中文，拼出英文单词。拼错了没关系：先听发音，再看提示，第 3 次会告诉你答案。";
+  $("s4").querySelector(".panel:last-child h3").textContent = "读完今天";
+  $("finish").textContent = "我读完啦！⭐";
+  $("nameAsk").querySelector(".panel > div").textContent = "🐯";
+  $("nameAsk").querySelector("h3").textContent = "欢迎来读英文故事！";
+  $("nameAsk").querySelector("p").innerHTML = "每天听一个小故事，认几个新单词，读完一天就得一颗 ⭐！";
+  $("nameAsk").querySelector(".note").textContent = "先告诉我你叫什么名字吧～";
+  $("nameOk").textContent = "开始读故事 →";
+}
+if(META.kids) applyKids();
+const kEmo = v => (KIDS && v && v.emo) ? '<span class="emo">' + v.emo + '</span>' : "";
+const starsOf = n => { const r = PROG.days[n]; return r && r.done ? 1 + (r.star2 ? 1 : 0) : 0; };
+const totalStars = () => Object.keys(PROG.days).reduce((a, k) => a + starsOf(k), 0);
 let DAY = 0, KEY = null, READER = "", TOKEN = "";
 let SKEY = "er:" + BOOK + ":none";   // progress key, one per code (set at unlock)
 let OWNER = "";
@@ -430,6 +489,7 @@ async function unlock(code, silent){
     const rawU = new Uint8Array(r.raw);
     KEY = await crypto.subtle.importKey("raw", rawU.slice(0, 32), "AES-GCM", false, ["decrypt"]);
     READER = new TextDecoder().decode(rawU.slice(32)) || "";
+    if(META.kidReader && READER === META.kidReader) applyKids();
     if($("remember").checked) sset(CKEY, r.code);
     $("lkMsg").textContent = "";
     TOKEN = await sha256hex(BOOK === "my-story-mbr" ? r.code : r.code + "|" + BOOK);
@@ -487,6 +547,13 @@ function start(){
   if(showPic) imgs.forEach(im => { const f = document.createElement("figure"); f.innerHTML = (imgs.length > 1 && im.title ? "<figcaption></figcaption>" : "") + '<a target="_blank" rel="noopener"><img loading="lazy" alt=""></a>'; if(f.querySelector("figcaption")) f.querySelector("figcaption").textContent = im.title; f.querySelector("a").href = im.src; f.querySelector("img").src = im.src; f.querySelector("img").alt = im.title || "今日图解"; $("pics").appendChild(f); });
   $("picTitle").textContent = imgs.length === 1 && imgs[0].title ? imgs[0].title : "今日图解";
   if(showPic) setFold("s0", true);   // the picture starts folded every time a day opens
+  if(KIDS && D.vocab.length){   // kids books: every word (built ≤10/day); other books: the 10 shortest new ones
+    const fresh = D.vocab.filter(v => !PROG.words[v.w] || PROG.words[v.w].day === DAY);
+    (META.kids ? fresh : fresh.slice().sort((a, b) => a.w.length - b.w.length).slice(0, 10)).forEach(v => { if(!PROG.words[v.w]) addWord(v); });
+    markStep(2);
+  }
+  if(KIDS) $("hdEyebrow").textContent = (META.zh || META.book) + " · " + (dm.label || "");
+  if(KIDS) $("hdLede").textContent = (D.chapter.zh || dm.zh || "") + " · " + words + " 词 · 听完、认单词、拼一拼，就能得 ⭐";
   buildText(); setupPlayer();
   renderCards(); renderReview(); renderProg();
   if(PROG.days[DAY] && PROG.days[DAY].steps) Object.keys(PROG.days[DAY].steps).forEach(markStep);
@@ -502,8 +569,9 @@ function showShelf(){
 }
 if(META.libraryUrl){ $("toLib").href = META.libraryUrl; $("toLib").hidden = false; }
 const chLabel = c => c.chs ? (c.chs.length > 1 ? "第 " + c.chs[0] + "–" + c.chs[c.chs.length - 1] + " 章精华" : "第 " + c.chs[0] + " 章精华") : "第 " + (c.ch || c.n) + " 章" + ((c.parts || 1) > 1 ? " · 第 " + c.part + "/" + c.parts + " 部分" : "");
-const PREVIEW = () => READER === "Ting" || READER === "体验码";   // these codes see every day at once
+const PREVIEW = () => READER === "Ting" || (READER === "体验码" && !KIDS);   // these codes see every day at once
 function renderShelf(){
+  if(KIDS) return renderKidShelf();
   $("shEyebrow").textContent = META.author;
   $("shTitle").textContent = META.book;
   const done = META.days.filter(d => isDone(d.n)).length;
@@ -533,6 +601,31 @@ function renderShelf(){
   }
   const last = META.days[META.days.length-1].n;
   if(last < META.total){ const p = document.createElement("div"); p.className = "soon"; p.textContent = "Day " + (last+1) + "–" + META.total + " 即将更新，链接不变，到时直接打开这个页面就能看到。"; box.appendChild(p); }
+  renderProg();
+}
+function renderKidShelf(){
+  $("shEyebrow").textContent = META.author;
+  $("shTitle").innerHTML = '<span class="kemo"></span>'; $("shTitle").querySelector(".kemo").textContent = META.emo || "📖"; $("shTitle").append(META.book);
+  const done = META.days.filter(d => isDone(d.n)).length;
+  $("shLede").innerHTML = ""; $("shLede").append((META.zh ? META.zh + " · " : "") + "共 " + META.total + " 天 · 已经读完 " + done + " 天");
+  const st = document.createElement("div"); st.className = "kstars"; st.textContent = "⭐ " + totalStars(); $("shLede").appendChild(document.createElement("br")); $("shLede").appendChild(st);
+  const box = $("days"); box.innerHTML = "";
+  const byStory = META.days.some(d => (d.parts || 1) > 1);
+  const nextDay = (META.days.find(d => !isDone(d.n)) || {}).n;
+  let key = null, grid = null;
+  META.days.forEach((d, i) => {
+    const k = byStory ? d.ch : Math.floor(i / 7);
+    if(k !== key){ key = k; const h = document.createElement("div"); h.className = "kgrp";
+      h.textContent = byStory ? "📗 " + (d.zh || d.title) : "📗 第 " + (k + 1) + " 周 · Day " + d.n + "–" + Math.min(d.n + 6, META.total);
+      grid = document.createElement("div"); grid.className = "kdays"; box.append(h, grid); }
+    const open = d.n === 1 || isDone(d.n - 1) || PREVIEW(), s = starsOf(d.n);
+    const b = document.createElement("button"); b.type = "button"; b.className = "kday" + (s ? " done" : d.n === nextDay && open ? " now" : ""); b.disabled = !open;
+    b.innerHTML = '<span class="n">Day ' + d.n + '</span><span class="s">' + (s ? "⭐".repeat(s) : d.n === nextDay && open ? "👉" : open ? "📖" : "🔒") + '</span><small></small>';
+    b.querySelector("small").textContent = d.n === nextDay && open && !s ? "今天读这个" : byStory ? ((d.parts || 1) > 1 ? d.part + "/" + d.parts : "") : (d.zh || d.title);
+    b.title = d.title; b.onclick = () => openDay(d.n); grid.appendChild(b);
+  });
+  const last = META.days[META.days.length-1].n;
+  if(last < META.total){ const p = document.createElement("div"); p.className = "soon"; p.textContent = "Day " + (last+1) + " 以后的故事正在做，很快就来 🛠️"; box.appendChild(p); }
   renderProg();
 }
 async function openDay(n){
@@ -660,7 +753,7 @@ function openPop(k){
 $("popClose").onclick = () => { $("pop").hidden = true; };
 $("popPlay").onclick = () => { clip.pause(); const s = SENTS[popK]; if(s.seg !== seg) loadSeg(s.seg, true, s.st[0]); else { audio.currentTime = s.st[0]; audio.playbackRate = rate(); playSafe(audio); } $("pop").hidden = true; };
 $("popSay").onclick = () => playSeg(popK);
-$("readDone").onclick = () => { markStep(1); setFold("s2", false); location.hash = "#s2"; };
+$("readDone").onclick = () => { markStep(1); const to = KIDS ? "s3" : "s2"; setFold(to, false); location.hash = "#" + to; };
 
 /* ---------- word clips ---------- */
 let clipCache = {};
@@ -748,13 +841,14 @@ function renderCards(){
   if(!list.length){ box.innerHTML = '<div class="panel note">还没有生词。先在第 2 步输入。</div>'; return; }
   list.forEach(v => {
     const c = document.createElement("div"); c.className = "card";
-    c.innerHTML = `<div class="top"><div><span class="w">${esc(v.w)}</span><span class="ipa">${esc(v.ipa)}</span></div><div class="row act"></div></div>
+    c.innerHTML = `<div class="top"><div>${kEmo(v)}<span class="w">${esc(v.w)}</span><span class="ipa">${esc(v.ipa)}</span></div><div class="row act"></div></div>
       <p class="cn"><span class="pos">${esc(v.pos)}</span>${esc(v.zh)}</p>
       <dl class="dl"><dt>书里</dt><dd class="ex"><span class="book">${hlBook(v)}</span></dd>
       <dt>例句</dt><dd class="ex"><span>${esc(v.ex)}<i>${esc(v.exzh)}</i></span></dd></dl>
       ${v.note ? `<p class="tip">💡 ${esc(v.note)}</p>` : ""}`;
     const act = c.querySelector(".act");
-    act.append(btn("🔊 正常", () => sayWord(v.w)), btn("🐢 慢速", () => sayWord(v.w, true)), btn("移出", () => removeWord(v.w), "rm"));
+    act.append(btn("🔊 正常", () => sayWord(v.w)), btn("🐢 慢速", () => sayWord(v.w, true)));
+    if(!KIDS) act.append(btn("移出", () => removeWord(v.w), "rm"));
     const dds = c.querySelectorAll("dd.ex");
     const k = bookSentK(v); if(k >= 0) dds[0].appendChild(btn("🔊", () => playSeg(k)));
     dds[1].appendChild(btn("🔊", () => playUrl(wordUrl(v, "e"))));
@@ -772,7 +866,7 @@ document.querySelectorAll(".step-head .fold").forEach(b => { const id = b.datase
 /* ---------- review ---------- */
 function drill(r, onDone){
   const el = document.createElement("div"); el.className = "drill";
-  el.innerHTML = `<div class="q">${esc(r.zh)}<small>${esc(r.pos)}</small>${r.wrong >= 2 ? '<span class="tag">错过 ' + r.wrong + ' 次</span>' : ""}</div>${r.cl ? '<div class="cz">' + esc(r.cl) + '</div>' : ""}`;
+  el.innerHTML = `<div class="q">${kEmo(VOC[r.w])}${esc(r.zh)}<small>${esc(r.pos)}</small>${r.wrong >= 2 ? '<span class="tag">错过 ' + r.wrong + ' 次</span>' : ""}</div>${r.cl ? '<div class="cz">' + esc(r.cl) + '</div>' : ""}`;
   const line = document.createElement("div"); line.className = "line";
   const inp = document.createElement("input"); inp.type = "text"; inp.autocomplete = "off"; inp.spellcheck = false; inp.setAttribute("autocapitalize","off"); inp.setAttribute("autocorrect","off"); inp.setAttribute("aria-label", r.zh + " 的英文");
   const b = document.createElement("button"); b.type = "button"; b.className = "btn small"; b.textContent = "提交";
@@ -794,7 +888,7 @@ function drill(r, onDone){
   b.onclick = check; inp.addEventListener("keydown", e => { if(e.key === "Enter") check(); });
   const out = document.createElement("button"); out.type = "button"; out.className = "rm"; out.textContent = "移出"; out.title = "不再复习这个词";
   out.onclick = () => { removeWord(r.w); toast("已移出 " + r.w + "，以后不再复习。", 2500); };
-  line.prepend(inp, b); line.appendChild(out); el.append(line, fb); return el;
+  line.prepend(inp, b); if(!KIDS) line.appendChild(out); el.append(line, fb); return el;
 }
 function grade(r, tries, isNew){
   if(isNew){ r.firstDone = true; r.next = addDays(1); r.stage = 0; if(tries) r.wrong++; }
@@ -835,7 +929,7 @@ function renderReview(){
   dueList.sort((a,b) => b.wrong - a.wrong).forEach(r => dueBox.appendChild(drill(r, tries => { grade(r, tries, false); })));
   $("dueCount").textContent = dueList.length ? "（" + dueList.length + " 个）" : "";
   const nb = $("newDrill"); nb.innerHTML = "";
-  if(!newList.length) nb.innerHTML = '<p class="note">' + (WORDS().some(r => r.day === DAY) ? "今天的生词都测过了 ✓" : "先在第 2 步输入生词。") + '</p>';
+  if(!newList.length) nb.innerHTML = '<p class="note">' + (WORDS().some(r => r.day === DAY) ? "今天的生词都测过了 ✓" : (KIDS ? "今天没有新单词。" : "先在第 2 步输入生词。")) + '</p>';
   newList.forEach(r => nb.appendChild(drill(r, tries => { grade(r, tries, true); })));
   $("newCount").textContent = newList.length ? "（" + newList.length + " 个）" : "";
   finInfo();
@@ -848,11 +942,14 @@ function finInfo(){
 }
 $("finish").onclick = () => {
   if(pending()){ toast("还有词没复习完，做完再点完成。", 3000); return; }
-  const r = dayRec(); r.done = iso(today()); r.steps[4] = 1; saveProg(); markStep(4);
+  const r = dayRec(), first = !r.done; r.done = iso(today()); r.steps[4] = 1;
+  if(KIDS && first){ const tw = WORDS().filter(w => w.day === DAY); r.star2 = tw.length > 0 && tw.every(w => !w.wrong) ? 1 : 0; }
+  saveProg(); markStep(4);
   renderProg(); finInfo();
   const m = $("finMsg"); m.hidden = false;
   const nextUp = META.days.some(d => d.n === DAY + 1);
   m.innerHTML = DAY >= META.total ? "🎉 全书读完了！" : nextUp ? "🎉 Day " + DAY + " 完成！Day " + (DAY+1) + " 已经打开，明天回到书架继续。到期的生词会自动出现在复习里。" : "🎉 Day " + DAY + " 完成！Day " + (DAY+1) + " 还没更新，到时回到书架就能看到。";
+  if(KIDS){ m.className = "kcheer"; m.innerHTML = "太棒了！Day " + DAY + " 读完啦 🎉<small>" + (r.star2 ? "获得 ⭐⭐！新单词一次全拼对，真厉害！" : "获得 ⭐！下次把新单词一次拼对，还能再得一颗 ⭐") + "</small><small>一共有 " + totalStars() + " 颗 ⭐ 了</small>"; }
   const back = document.createElement("button"); back.className = "btn ghost small"; back.style.marginLeft = "8px"; back.textContent = "返回书架"; back.onclick = showShelf; m.appendChild(back);
 };
 

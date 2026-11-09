@@ -357,8 +357,9 @@ if(META.theme){   // the book's cover colours: header band always, buttons/accen
   st.textContent = ":root{--main:" + t.main + ";--gold:" + t.gold + "}@media not all and (prefers-color-scheme: dark){:root:not([data-theme=dark]){--accent:" + t.main + ";--accent-soft:" + t.soft + ";--line:" + t.line + "}}:root[data-theme=light]{--accent:" + t.main + ";--accent-soft:" + t.soft + ";--line:" + t.line + "}";
   document.head.appendChild(st);
 }
-const KIDS = !!META.kids;   // KIDMODE
-if(KIDS){
+let KIDS = false;   // KIDMODE: kids books always; other books for META.kidReader (the son's code)
+function applyKids(){
+  if(KIDS) return; KIDS = true;
   document.body.classList.add("kids");
   document.querySelectorAll(".jw").forEach(e => e.textContent = "📚 LITTLE READERS");
   const nav = document.querySelectorAll("#steps a"); nav[0].textContent = "① 听故事"; nav[1].hidden = true; nav[2].textContent = "② 认单词"; nav[3].textContent = "③ 拼一拼";
@@ -378,6 +379,7 @@ if(KIDS){
   $("nameAsk").querySelector(".note").textContent = "先告诉我你叫什么名字吧～";
   $("nameOk").textContent = "开始读故事 →";
 }
+if(META.kids) applyKids();
 const kEmo = v => (KIDS && v && v.emo) ? '<span class="emo">' + v.emo + '</span>' : "";
 const starsOf = n => { const r = PROG.days[n]; return r && r.done ? 1 + (r.star2 ? 1 : 0) : 0; };
 const totalStars = () => Object.keys(PROG.days).reduce((a, k) => a + starsOf(k), 0);
@@ -487,6 +489,7 @@ async function unlock(code, silent){
     const rawU = new Uint8Array(r.raw);
     KEY = await crypto.subtle.importKey("raw", rawU.slice(0, 32), "AES-GCM", false, ["decrypt"]);
     READER = new TextDecoder().decode(rawU.slice(32)) || "";
+    if(META.kidReader && READER === META.kidReader) applyKids();
     if($("remember").checked) sset(CKEY, r.code);
     $("lkMsg").textContent = "";
     TOKEN = await sha256hex(BOOK === "my-story-mbr" ? r.code : r.code + "|" + BOOK);
@@ -544,7 +547,11 @@ function start(){
   if(showPic) imgs.forEach(im => { const f = document.createElement("figure"); f.innerHTML = (imgs.length > 1 && im.title ? "<figcaption></figcaption>" : "") + '<a target="_blank" rel="noopener"><img loading="lazy" alt=""></a>'; if(f.querySelector("figcaption")) f.querySelector("figcaption").textContent = im.title; f.querySelector("a").href = im.src; f.querySelector("img").src = im.src; f.querySelector("img").alt = im.title || "今日图解"; $("pics").appendChild(f); });
   $("picTitle").textContent = imgs.length === 1 && imgs[0].title ? imgs[0].title : "今日图解";
   if(showPic) setFold("s0", true);   // the picture starts folded every time a day opens
-  if(KIDS && D.vocab.length){ D.vocab.forEach(v => { if(!PROG.words[v.w]) addWord(v); }); markStep(2); }
+  if(KIDS && D.vocab.length){   // kids books: every word (built ≤10/day); other books: the 10 shortest new ones
+    const fresh = D.vocab.filter(v => !PROG.words[v.w] || PROG.words[v.w].day === DAY);
+    (META.kids ? fresh : fresh.slice().sort((a, b) => a.w.length - b.w.length).slice(0, 10)).forEach(v => { if(!PROG.words[v.w]) addWord(v); });
+    markStep(2);
+  }
   if(KIDS) $("hdEyebrow").textContent = (META.zh || META.book) + " · " + (dm.label || "");
   if(KIDS) $("hdLede").textContent = (D.chapter.zh || dm.zh || "") + " · " + words + " 词 · 听完、认单词、拼一拼，就能得 ⭐";
   buildText(); setupPlayer();
@@ -562,7 +569,7 @@ function showShelf(){
 }
 if(META.libraryUrl){ $("toLib").href = META.libraryUrl; $("toLib").hidden = false; }
 const chLabel = c => c.chs ? (c.chs.length > 1 ? "第 " + c.chs[0] + "–" + c.chs[c.chs.length - 1] + " 章精华" : "第 " + c.chs[0] + " 章精华") : "第 " + (c.ch || c.n) + " 章" + ((c.parts || 1) > 1 ? " · 第 " + c.part + "/" + c.parts + " 部分" : "");
-const PREVIEW = () => READER === "Ting" || (READER === "体验码" && !META.kids);   // these codes see every day at once
+const PREVIEW = () => READER === "Ting" || (READER === "体验码" && !KIDS);   // these codes see every day at once
 function renderShelf(){
   if(KIDS) return renderKidShelf();
   $("shEyebrow").textContent = META.author;

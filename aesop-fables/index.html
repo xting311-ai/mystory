@@ -360,6 +360,7 @@ if(META.theme){   // the book's cover colours: header band always, buttons/accen
 const KIDS = !!META.kids;   // KIDMODE
 if(KIDS){
   document.body.classList.add("kids");
+  document.querySelectorAll(".jw").forEach(e => e.textContent = "📚 LITTLE READERS");
   const nav = document.querySelectorAll("#steps a"); nav[0].textContent = "① 听故事"; nav[1].hidden = true; nav[2].textContent = "② 认单词"; nav[3].textContent = "③ 拼一拼";
   $("s2").hidden = true;
   const H = (id, n, t) => { $(id).querySelector(".step-head .n").textContent = n; $(id).querySelector(".step-head h2").textContent = t; };

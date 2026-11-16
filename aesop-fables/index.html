@@ -369,7 +369,7 @@ function applyKids(){
   H("s1", "①", "听故事"); H("s3", "②", "认单词"); H("s4", "③", "拼一拼");
   $("readHint").textContent = "先点 ▶ 听一遍故事。再点“显示英文”，边听边看。哪句没听清，点那句就能再听。";
   $("readDone").textContent = "听完了，去认单词 →";
-  $("s3").querySelector(".note").textContent = "今天的新单词都在这里。每个词点 🔊 听两遍，跟着读出来。";
+  $("s3").querySelector(".note").textContent = "今天的新单词都在这里。每个词点 🔊 听两遍，跟着读出来。已经会的词，点“我会了 ✓”，以后就不用再学它。";
   $("cardsDone").textContent = "认完了，去拼一拼 →";
   $("s4").querySelector(".note").textContent = "看中文，拼出英文单词。拼错了没关系：先听发音，再看提示，第 3 次会告诉你答案。";
   $("s4").querySelector(".panel:last-child h3").textContent = "读完今天";
@@ -549,7 +549,10 @@ function start(){
   $("picTitle").textContent = imgs.length === 1 && imgs[0].title ? imgs[0].title : "今日图解";
   if(showPic) setFold("s0", true);   // the picture starts folded every time a day opens
   if(KIDS && D.vocab.length){   // kids books: every word (≤7 story + everyday words); other books: the 7 shortest story words + everyday words
-    const fresh = D.vocab.filter(v => !PROG.words[v.w] || PROG.words[v.w].day === DAY);
+    const known = new Set();
+    try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i);
+      if(k && k.startsWith("er:") && k.endsWith(":" + OWNER) && k !== SKEY){ const w = (JSON.parse(localStorage.getItem(k) || "{}") || {}).words || {}; for(const x in w) if(w[x] && w[x].out) known.add(x); } } }catch(e){}
+    const fresh = D.vocab.filter(v => (!PROG.words[v.w] && !known.has(v.w)) || (PROG.words[v.w] && PROG.words[v.w].day === DAY));
     (META.kids ? fresh : fresh.filter(v => !v.common).sort((a, b) => a.w.length - b.w.length).slice(0, 7).concat(fresh.filter(v => v.common))).forEach(v => { if(!PROG.words[v.w]) addWord(v); });
     markStep(2);
   }
@@ -849,7 +852,7 @@ function renderCards(){
       ${v.note ? `<p class="tip">💡 ${esc(v.note)}</p>` : ""}`;
     const act = c.querySelector(".act");
     act.append(btn("🔊 正常", () => sayWord(v.w)), btn("🐢 慢速", () => sayWord(v.w, true)));
-    if(!KIDS) act.append(btn("移出", () => removeWord(v.w), "rm"));
+    act.append(KIDS ? btn("我会了 ✓", () => { removeWord(v.w); toast("👍 " + v.w + " 你已经会了，以后不再学它。", 2500); }, "rm") : btn("移出", () => removeWord(v.w), "rm"));
     const dds = c.querySelectorAll("dd.ex");
     const k = bookSentK(v); if(k >= 0) dds[0].appendChild(btn("🔊", () => playSeg(k)));
     dds[1].appendChild(btn("🔊", () => playUrl(wordUrl(v, "e"))));
@@ -888,8 +891,9 @@ function drill(r, onDone){
   };
   b.onclick = check; inp.addEventListener("keydown", e => { if(e.key === "Enter") check(); });
   const out = document.createElement("button"); out.type = "button"; out.className = "rm"; out.textContent = "移出"; out.title = "不再复习这个词";
-  out.onclick = () => { removeWord(r.w); toast("已移出 " + r.w + "，以后不再复习。", 2500); };
-  line.prepend(inp, b); if(!KIDS) line.appendChild(out); el.append(line, fb); return el;
+  out.onclick = () => { removeWord(r.w); toast(KIDS ? "👍 " + r.w + " 你已经会了，以后不再学它。" : "已移出 " + r.w + "，以后不再复习。", 2500); };
+  if(KIDS){ out.textContent = "我会了 ✓"; out.title = "这个词我会了，不用再学"; }
+  line.prepend(inp, b); line.appendChild(out); el.append(line, fb); return el;
 }
 function grade(r, tries, isNew){
   if(isNew){ r.firstDone = true; r.next = addDays(1); r.stage = 0; if(tries) r.wrong++; }
